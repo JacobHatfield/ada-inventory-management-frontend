@@ -1,6 +1,7 @@
 # Inventory Management System - Requirements & Features
 
 ## Overview
+
 Enterprise-grade inventory management system following three-layer architecture with Vue 3 + Tailwind CSS frontend, FastAPI middleware, and PostgreSQL database.
 
 ---
@@ -8,6 +9,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 1. User Management Features
 
 ### 1.1 Authentication & Authorization
+
 - **User Registration**
   - Create new user accounts
   - Secure password storage (hashing)
@@ -36,6 +38,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 2. Core Inventory Management Features
 
 ### 2.1 Basic CRUD Operations (Essential)
+
 - **Create Inventory Items**
   - Add new items with name, quantity, description
   - Associate items with authenticated user/organization
@@ -58,6 +61,7 @@ Enterprise-grade inventory management system following three-layer architecture 
   - Handle related data appropriately
 
 ### 2.2 Intermediate Features
+
 - **Stock Level Management**
   - Increment/decrement stock quantities
   - Prevent negative stock values
@@ -74,6 +78,7 @@ Enterprise-grade inventory management system following three-layer architecture 
   - Item attribute requirements
 
 ### 2.3 Advanced Features (Higher marks)
+
 - **Low-Stock Alerts**
   - Define threshold levels per item
   - Automatic alerts when stock falls below threshold
@@ -106,6 +111,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 3. Technical Architecture Requirements
 
 ### 3.1 Three-Layer Architecture
+
 ```
 ┌─────────────────────┐
 │  Vue 3 + Tailwind   │ (Client-side)
@@ -126,6 +132,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ```
 
 ### 3.2 Technology Stack
+
 - **Frontend:** Vue 3 + Vite
 - **Styling:** Tailwind CSS
 - **Middleware:** FastAPI
@@ -136,6 +143,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - **Storage:** Cloudinary or similar for media (optional)
 
 ### 3.3 Code Organisation
+
 - **Two Separate Repositories:**
   1. Frontend repository (Vue 3 + Tailwind CSS)
   2. Backend/Middleware repository (FastAPI + Database)
@@ -148,6 +156,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 4. Security Requirements
 
 ### 4.1 Essential Security Features
+
 - **Password Security**
   - Secure password hashing
   - Never store plain text passwords
@@ -173,6 +182,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 5. Testing Requirements
 
 ### 5.1 Required Test Coverage
+
 - **Unit Tests**
   - Test individual functions and methods
   - Test Pydantic models and schemas
@@ -197,6 +207,7 @@ Enterprise-grade inventory management system following three-layer architecture 
   - Test stock management
 
 ### 5.2 Testing Strategy
+
 - Clear explanation of what is tested and why
 - Tests must run successfully
 - Enterprise-quality test practices
@@ -207,17 +218,20 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 6. Deployment Requirements
 
 ### 6.1 Basic Deployment
+
 - At least one component (frontend OR backend) deployed
 - Accessible via public URL
 - Functional and stable
 
 ### 6.2 Intermediate Deployment
+
 - Both frontend and backend fully deployed
 - Components can communicate
 - Environment variables properly configured
 - System stable and functional
 
 ### 6.3 Advanced Deployment (Highest marks)
+
 - Secure secrets management
 - Environment-based configuration
 - **CI/CD Pipeline** (GitHub Actions)
@@ -232,7 +246,9 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 7. Documentation Requirements
 
 ### 7.1 README Files (Both Repositories)
+
 **Must Include:**
+
 - Application overview
 - Setup instructions (step-by-step)
 - Usage instructions
@@ -245,12 +261,14 @@ Enterprise-grade inventory management system following three-layer architecture 
 - Generative AI usage acknowledgment
 
 **Professional Quality:**
+
 - Clear and concise
 - Suitable for enterprise handover
 - Well-formatted
 - Complete and accurate
 
 ### 7.2 API Documentation
+
 - All endpoint descriptions
 - Request/response formats
 - Authentication requirements
@@ -262,6 +280,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 8. External Integrations (Optional - Higher Marks)
 
 ### 8.1 Email Service Integration
+
 - SendGrid or similar email provider
 - Use cases:
   - Password reset emails
@@ -271,6 +290,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - Error handling for email failures
 
 ### 8.2 Cloud Storage Integration
+
 - Cloudinary or similar cloud storage
 - Use cases:
   - User profile images
@@ -284,6 +304,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 9. Feature Priority Matrix
 
 ### Essential (Must Have) - Required for Pass
+
 - User registration
 - User login with JWT authentication
 - Protected routes
@@ -295,6 +316,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - User-item association
 
 ### Intermediate (Should Have) - Higher Grades
+
 - Stock level updates
 - Search and filtering
 - Validation to prevent negative stock
@@ -303,6 +325,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - Comprehensive testing
 
 ### Advanced (Nice to Have) - Highest Grades
+
 - Password reset workflow
 - Email notifications
 - Low-stock alerts
@@ -318,6 +341,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 10. Assessment Criteria
 
 ### Grading Breakdown (100% Total)
+
 - **Feature Implementation:** 30%
 - **Quality of Architecture:** 30%
 - **Testing:** 10%
@@ -325,6 +349,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - **Documentation Quality:** 10%
 
 ### Key Principles
+
 - Quality over quantity
 - Smaller, well-architected system > larger system with weak separation
 - Clear separation of concerns essential
@@ -336,6 +361,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 11. Development Guidelines
 
 ### Do's
+
 - Follow three-layer architecture strictly
 - Write clean, modular code
 - Implement comprehensive testing
@@ -345,6 +371,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - Seek clarification when needed
 
 ### Don'ts
+
 - Don't access database directly from frontend
 - Don't hardcode secrets or sensitive data
 - Don't submit scaffolded/generated code without understanding
@@ -357,6 +384,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## 12. Submission Checklist
 
 ### Required Deliverables
+
 - [ ] Frontend repository link (Vue 3 + Tailwind CSS)
 - [ ] Backend repository link (FastAPI)
 - [ ] Video demonstration link (≤20 minutes)
@@ -367,6 +395,7 @@ Enterprise-grade inventory management system following three-layer architecture 
 - [ ] AI usage acknowledged
 
 ### Video Demonstration Content
+
 - [ ] User registration demo
 - [ ] User login demo
 - [ ] Password reset workflow (if implemented)
@@ -383,4 +412,4 @@ Enterprise-grade inventory management system following three-layer architecture 
 ## Support & Resources
 
 - **Supported Stack:** Vue 3, Tailwind CSS, FastAPI, PostgreSQL
-- **Deployment Platform:** Render 
+- **Deployment Platform:** Render

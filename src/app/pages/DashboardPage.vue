@@ -8,7 +8,9 @@
     <div class="mt-6 grid gap-3 sm:grid-cols-2">
       <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <p class="text-sm font-semibold text-slate-800">Feature folders created</p>
-        <p class="mt-1 text-sm text-slate-600">auth, inventory, categories, audit, shared, router</p>
+        <p class="mt-1 text-sm text-slate-600">
+          auth, inventory, categories, audit, shared, router
+        </p>
       </article>
       <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <p class="text-sm font-semibold text-slate-800">Core libraries installed</p>

@@ -1,33 +1,33 @@
 export interface UserProfile {
-  id: number
-  email: string
-  full_name: string | null
-  is_active: boolean
-  created_at?: string
-  updated_at?: string
+  id: number;
+  email: string;
+  full_name: string | null;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface RegisterRequest {
-  email: string
-  password: string
-  full_name?: string
+  email: string;
+  password: string;
+  full_name?: string;
 }
 
 export interface LoginRequest {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export interface TokenResponse {
-  access_token: string
-  token_type: string
+  access_token: string;
+  token_type: string;
 }
 
 export interface ForgotPasswordRequest {
-  email: string
+  email: string;
 }
 
 export interface ResetPasswordRequest {
-  token: string
-  new_password: string
+  token: string;
+  new_password: string;
 }

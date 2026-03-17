@@ -1,4 +1,4 @@
-import { apiRequest } from './apiClient'
+import { apiRequest } from './apiClient';
 import type {
   ForgotPasswordRequest,
   LoginRequest,
@@ -6,7 +6,7 @@ import type {
   RegisterRequest,
   TokenResponse,
   UserProfile,
-} from '../types'
+} from '../types';
 
 export const authService = {
   register(payload: RegisterRequest): Promise<UserProfile> {
@@ -14,7 +14,7 @@ export const authService = {
       method: 'POST',
       body: payload,
       skipAuth: true,
-    })
+    });
   },
 
   login(payload: LoginRequest): Promise<TokenResponse> {
@@ -22,11 +22,11 @@ export const authService = {
       method: 'POST',
       body: payload,
       skipAuth: true,
-    })
+    });
   },
 
   getCurrentUser(): Promise<UserProfile> {
-    return apiRequest<UserProfile>('/auth/me')
+    return apiRequest<UserProfile>('/auth/me');
   },
 
   forgotPassword(payload: ForgotPasswordRequest): Promise<{ message: string }> {
@@ -34,7 +34,7 @@ export const authService = {
       method: 'POST',
       body: payload,
       skipAuth: true,
-    })
+    });
   },
 
   resetPassword(payload: ResetPasswordRequest): Promise<{ message: string }> {
@@ -42,6 +42,6 @@ export const authService = {
       method: 'POST',
       body: payload,
       skipAuth: true,
-    })
+    });
   },
-}
+};
