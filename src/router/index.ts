@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardPage from '../app/pages/DashboardPage.vue'
 import LoginPage from '../app/pages/LoginPage.vue'
 import { useAuthStore } from '../shared/stores/authStore'
+import { useRouteUiStore } from '../shared/stores/routeUiStore' // Added import for route UI store
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -38,6 +39,9 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const authStore = useAuthStore()
+  const routeUi = useRouteUiStore()
+
+  routeUi.startNavigation()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return {
@@ -51,6 +55,16 @@ router.beforeEach((to) => {
   }
 
   return true
+})
+
+router.afterEach(() => {
+  const routeUi = useRouteUiStore()
+  routeUi.finishNavigation()
+})
+
+router.onError((err) => {
+  const routeUi = useRouteUiStore()
+  routeUi.setNavigationError(String(err instanceof Error ? err.message : err))
 })
 
 export default router

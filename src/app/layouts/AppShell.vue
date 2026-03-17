@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen bg-slate-100 text-slate-900">
+    <ErrorBoundary>
     <header class="border-b border-slate-200 bg-white">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <div>
@@ -40,5 +41,12 @@
         <RouterView />
       </main>
     </div>
+    <GlobalLoading />
+    </ErrorBoundary>
   </div>
 </template>
+
+<script setup lang="ts">
+import GlobalLoading from '../../shared/components/GlobalLoading.vue'
+import ErrorBoundary from '../../shared/components/ErrorBoundary.vue'
+</script>
