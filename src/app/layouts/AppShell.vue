@@ -12,6 +12,7 @@
           <button
             type="button"
             class="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+            @click="handleLogout"
           >
             Logout
           </button>
@@ -31,13 +32,6 @@
             >
               Dashboard
             </RouterLink>
-            <RouterLink
-              to="/login"
-              class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-              active-class="bg-slate-900 text-white hover:bg-slate-900"
-            >
-              Login
-            </RouterLink>
           </nav>
         </aside>
 
@@ -51,6 +45,16 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import GlobalLoading from '../../shared/components/GlobalLoading.vue';
 import ErrorBoundary from '../../shared/components/ErrorBoundary.vue';
+import { useAuthStore } from '../../shared/stores/authStore';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+function handleLogout(): void {
+  authStore.markLoggedOut();
+  router.push({ name: 'login' });
+}
 </script>
