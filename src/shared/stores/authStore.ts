@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 
 import { authService } from '../services/authService';
 import { setAuthTokenProvider } from '../services/apiClient';
-import type { UserProfile } from '../types';
+import type { LoginRequest, RegisterRequest, UserProfile } from '../types';
 
 const TOKEN_STORAGE_KEY = 'ada_inventory_access_token';
 
@@ -12,7 +12,14 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserProfile | null>(null);
   const initialized = ref(false);
   const isBootstrapping = ref(false);
-  const authError = ref<string | null>(null);
+
+  // Per-action loading flags
+  const isLoggingIn = ref(false);
+  const isRegistering = ref(false);
+
+  // Per-action error state
+  const loginError = ref<string | null>(null);
+  const registerError = ref<string | null>(null);
 
   setAuthTokenProvider(() => token.value);
 
@@ -47,7 +54,8 @@ export const useAuthStore = defineStore('auth', () => {
   function clearSession(): void {
     token.value = null;
     user.value = null;
-    authError.value = null;
+    loginError.value = null;
+    registerError.value = null;
     persistToken(null);
   }
 
@@ -56,10 +64,8 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       user.value = await authService.getCurrentUser();
-      authError.value = null;
-    } catch (error) {
+    } catch {
       clearSession();
-      authError.value = error instanceof Error ? error.message : 'Session restore failed';
     }
   }
 
@@ -84,6 +90,42 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function login(payload: LoginRequest): Promise<void> {
+    isLoggingIn.value = true;
+    loginError.value = null;
+
+    try {
+      const tokenResponse = await authService.login(payload);
+      setToken(tokenResponse.access_token);
+      user.value = await authService.getCurrentUser();
+      initialized.value = true;
+    } catch (error) {
+      loginError.value = error instanceof Error ? error.message : 'Login failed';
+      throw error;
+    } finally {
+      isLoggingIn.value = false;
+    }
+  }
+
+  async function register(payload: RegisterRequest): Promise<void> {
+    isRegistering.value = true;
+    registerError.value = null;
+
+    try {
+      await authService.register(payload);
+      // Auto-login after successful registration
+      await login({ email: payload.email, password: payload.password });
+    } catch (error) {
+      // Only set registerError if the failure was in registration, not the auto-login
+      if (!loginError.value) {
+        registerError.value = error instanceof Error ? error.message : 'Registration failed';
+      }
+      throw error;
+    } finally {
+      isRegistering.value = false;
+    }
+  }
+
   function markLoggedOut(): void {
     clearSession();
     initialized.value = true;
@@ -94,11 +136,16 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     initialized,
     isBootstrapping,
-    authError,
+    isLoggingIn,
+    isRegistering,
+    loginError,
+    registerError,
     isAuthenticated,
     setToken,
     clearSession,
     initializeSession,
+    login,
+    register,
     markLoggedOut,
   };
 });
