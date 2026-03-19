@@ -3,6 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import DashboardPage from '../app/pages/DashboardPage.vue';
 import LoginPage from '../features/auth/LoginPage.vue';
 import RegisterPage from '../features/auth/RegisterPage.vue';
+import InventoryListPage from '../features/inventory/InventoryListPage.vue';
+import CreateItemPage from '../features/inventory/CreateItemPage.vue';
+import ItemDetailPage from '../features/inventory/ItemDetailPage.vue';
+import EditItemPage from '../features/inventory/EditItemPage.vue';
 import { useAuthStore } from '../shared/stores/authStore';
 import { useRouteUiStore } from '../shared/stores/routeUiStore'; // Added import for route UI store
 
@@ -18,6 +22,30 @@ const authenticatedRoutes = [
     path: '/',
     name: 'dashboard',
     component: DashboardPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/inventory',
+    name: 'inventory',
+    component: InventoryListPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/inventory/create',
+    name: 'inventory-create',
+    component: CreateItemPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/inventory/:id',
+    name: 'inventory-detail',
+    component: ItemDetailPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/inventory/:id/edit',
+    name: 'inventory-edit',
+    component: EditItemPage,
     meta: { requiresAuth: true },
   },
 ];
