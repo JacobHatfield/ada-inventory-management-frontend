@@ -39,11 +39,7 @@
 
     <!-- Loading skeleton -->
     <div v-if="store.isFetchingList" class="space-y-3">
-      <div
-        v-for="n in 5"
-        :key="n"
-        class="h-16 animate-pulse rounded-lg bg-slate-100"
-      />
+      <div v-for="n in 5" :key="n" class="h-16 animate-pulse rounded-lg bg-slate-100" />
     </div>
 
     <!-- Empty state -->
@@ -78,7 +74,9 @@
     <!-- Item table -->
     <div v-else class="overflow-hidden rounded-xl border border-slate-200">
       <table class="w-full text-sm">
-        <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <thead
+          class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+        >
           <tr>
             <th class="px-4 py-3">Name</th>
             <th class="px-4 py-3">Category</th>
@@ -88,11 +86,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 bg-white">
-          <tr
-            v-for="item in store.items"
-            :key="item.id"
-            class="transition hover:bg-slate-50"
-          >
+          <tr v-for="item in store.items" :key="item.id" class="transition hover:bg-slate-50">
             <!-- Name -->
             <td class="px-4 py-3">
               <RouterLink
@@ -188,12 +182,7 @@
       role="alert"
     >
       {{ store.mutationError }}
-      <button
-        class="ml-2 underline"
-        @click="store.clearMutationError()"
-      >
-        Dismiss
-      </button>
+      <button class="ml-2 underline" @click="store.clearMutationError()">Dismiss</button>
     </div>
   </section>
 </template>

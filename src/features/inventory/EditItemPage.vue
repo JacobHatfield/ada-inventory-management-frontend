@@ -24,7 +24,10 @@
     </div>
 
     <!-- Loading skeleton -->
-    <div v-if="store.isFetchingItem" class="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
+    <div
+      v-if="store.isFetchingItem"
+      class="space-y-4 rounded-xl border border-slate-200 bg-white p-6"
+    >
       <div v-for="n in 4" :key="n" class="h-10 animate-pulse rounded-lg bg-slate-100" />
     </div>
 

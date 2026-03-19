@@ -97,9 +97,7 @@
         <p v-if="lowStockThresholdError" class="mt-1.5 text-xs text-red-600">
           {{ lowStockThresholdError }}
         </p>
-        <p class="mt-1 text-xs text-slate-400">
-          Alert when stock falls below this number
-        </p>
+        <p class="mt-1 text-xs text-slate-400">Alert when stock falls below this number</p>
       </div>
     </div>
 
@@ -235,8 +233,7 @@ const { value: description, errorMessage: descriptionError } = useField<string>(
 const { value: quantity, errorMessage: quantityError } = useField<number>('quantity');
 const { value: lowStockThreshold, errorMessage: lowStockThresholdError } =
   useField<number>('low_stock_threshold');
-const { value: categoryId, errorMessage: categoryIdError } =
-  useField<number | null>('category_id');
+const { value: categoryId, errorMessage: categoryIdError } = useField<number | null>('category_id');
 
 // Re-populate form when initialValues change (e.g. after async fetch in edit mode)
 watch(

@@ -73,7 +73,14 @@ describe('inventoryStore', () => {
     });
 
     it('stores pagination meta when provided', async () => {
-      const meta = { page: 1, page_size: 10, total_items: 2, total_pages: 1, has_next: false, has_prev: false };
+      const meta = {
+        page: 1,
+        page_size: 10,
+        total_items: 2,
+        total_pages: 1,
+        has_next: false,
+        has_prev: false,
+      };
       vi.mocked(inventoryService.list).mockResolvedValue({ items: [mockItem], meta });
 
       const store = useInventoryStore();

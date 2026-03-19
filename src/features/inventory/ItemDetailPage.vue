@@ -19,7 +19,10 @@
     </RouterLink>
 
     <!-- Loading skeleton -->
-    <div v-if="store.isFetchingItem" class="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
+    <div
+      v-if="store.isFetchingItem"
+      class="space-y-4 rounded-xl border border-slate-200 bg-white p-6"
+    >
       <div class="h-7 w-1/2 animate-pulse rounded-lg bg-slate-100" />
       <div v-for="n in 5" :key="n" class="h-10 animate-pulse rounded-lg bg-slate-100" />
     </div>
@@ -44,7 +47,9 @@
         <div>
           <h2 class="text-xl font-bold text-slate-900">{{ store.selectedItem.name }}</h2>
           <p v-if="store.selectedItem.category" class="mt-1">
-            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+            <span
+              class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700"
+            >
               {{ store.selectedItem.category.name }}
             </span>
           </p>
@@ -78,7 +83,8 @@
           />
         </svg>
         Stock is below the low stock threshold of
-        <strong>{{ store.selectedItem.low_stock_threshold }}</strong>.
+        <strong>{{ store.selectedItem.low_stock_threshold }}</strong
+        >.
       </div>
 
       <!-- Attributes card -->
@@ -106,7 +112,14 @@
                   title="Decrement stock"
                   @click="handleDecrement"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
                   </svg>
                 </button>
@@ -116,7 +129,14 @@
                   title="Increment stock"
                   @click="handleIncrement"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
                 </button>
