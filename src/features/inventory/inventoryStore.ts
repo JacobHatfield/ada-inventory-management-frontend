@@ -1,13 +1,13 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import { inventoryService } from '../services/inventoryService';
+import { inventoryService } from '@/shared/services/inventoryService';
 import type {
   InventoryItem,
   InventoryCreateRequest,
   InventoryUpdateRequest,
   InventoryListQueryParams,
   PaginationMeta,
-} from '../types';
+} from '@/shared/types';
 
 export const useInventoryStore = defineStore('inventory', () => {
   // State
@@ -31,7 +31,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   // Computed
   const hasItems = computed(() => items.value.length > 0);
   const lowStockItems = computed(() =>
-    items.value.filter((item) => item.is_low_stock),
+    items.value.filter((item: InventoryItem) => item.is_low_stock),
   );
 
   // Actions
@@ -89,7 +89,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 
     try {
       const updated = await inventoryService.update(itemId, payload);
-      const index = items.value.findIndex((i) => i.id === itemId);
+      const index = items.value.findIndex((i: InventoryItem) => i.id === itemId);
       if (index !== -1) {
         items.value[index] = updated;
       }
@@ -111,7 +111,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 
     try {
       await inventoryService.remove(itemId);
-      items.value = items.value.filter((i) => i.id !== itemId);
+      items.value = items.value.filter((i: InventoryItem) => i.id !== itemId);
       if (selectedItem.value?.id === itemId) {
         selectedItem.value = null;
       }
@@ -129,7 +129,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 
     try {
       const updated = await inventoryService.incrementStock(itemId, amount);
-      const index = items.value.findIndex((i) => i.id === itemId);
+      const index = items.value.findIndex((i: InventoryItem) => i.id === itemId);
       if (index !== -1) {
         items.value[index] = updated;
       }
@@ -150,7 +150,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 
     try {
       const updated = await inventoryService.decrementStock(itemId, amount);
-      const index = items.value.findIndex((i) => i.id === itemId);
+      const index = items.value.findIndex((i: InventoryItem) => i.id === itemId);
       if (index !== -1) {
         items.value[index] = updated;
       }
