@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import DashboardPage from '../app/pages/DashboardPage.vue';
 import LoginPage from '../features/auth/LoginPage.vue';
+import RegisterPage from '../features/auth/RegisterPage.vue';
 import { useAuthStore } from '../shared/stores/authStore';
 import { useRouteUiStore } from '../shared/stores/routeUiStore'; // Added import for route UI store
 
@@ -26,6 +27,12 @@ const publicRoutes = [
     path: '/login',
     name: 'login',
     component: LoginPage,
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterPage,
     meta: { guestOnly: true },
   },
 ];
