@@ -3,9 +3,7 @@
     <div class="w-full max-w-sm">
       <!-- Header -->
       <div class="mb-8 text-center">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-          ADA Inventory
-        </p>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">ADA Inventory</p>
         <h1 class="mt-1 text-2xl font-bold text-slate-900">Sign in to your account</h1>
       </div>
 
@@ -119,7 +117,10 @@ const router = useRouter();
 const schema = toTypedSchema(
   z.object({
     email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-    password: z.string().min(1, 'Password is required').min(8, 'Password must be at least 8 characters'),
+    password: z
+      .string()
+      .min(1, 'Password is required')
+      .min(8, 'Password must be at least 8 characters'),
   }),
 );
 

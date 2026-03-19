@@ -3,9 +3,7 @@
     <div class="w-full max-w-sm">
       <!-- Header -->
       <div class="mb-8 text-center">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-          ADA Inventory
-        </p>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">ADA Inventory</p>
         <h1 class="mt-1 text-2xl font-bold text-slate-900">Create your account</h1>
       </div>
 
@@ -87,10 +85,7 @@
 
           <!-- Confirm password -->
           <div class="mb-6">
-            <label
-              class="mb-1.5 block text-sm font-medium text-slate-700"
-              for="confirm_password"
-            >
+            <label class="mb-1.5 block text-sm font-medium text-slate-700" for="confirm_password">
               Confirm password
             </label>
             <input

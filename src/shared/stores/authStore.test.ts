@@ -64,9 +64,9 @@ describe('authStore', () => {
       vi.mocked(authService.login).mockRejectedValue(new Error('Invalid credentials'));
 
       const store = useAuthStore();
-      await expect(
-        store.login({ email: 'test@example.com', password: 'wrong' }),
-      ).rejects.toThrow('Invalid credentials');
+      await expect(store.login({ email: 'test@example.com', password: 'wrong' })).rejects.toThrow(
+        'Invalid credentials',
+      );
 
       expect(store.token).toBeNull();
       expect(store.user).toBeNull();
