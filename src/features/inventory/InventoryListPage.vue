@@ -1,0 +1,205 @@
+<template>
+  <section>
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">Inventory</h2>
+        <p v-if="store.paginationMeta" class="mt-0.5 text-sm text-slate-500">
+          {{ store.paginationMeta.total_items }} item{{
+            store.paginationMeta.total_items === 1 ? '' : 's'
+          }}
+        </p>
+      </div>
+      <RouterLink
+        to="/inventory/create"
+        class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add item
+      </RouterLink>
+    </div>
+
+    <!-- Error banner -->
+    <div
+      v-if="store.listError"
+      class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      role="alert"
+    >
+      {{ store.listError }}
+    </div>
+
+    <!-- Loading skeleton -->
+    <div v-if="store.isFetchingList" class="space-y-3">
+      <div v-for="n in 5" :key="n" class="h-16 animate-pulse rounded-lg bg-slate-100" />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="!store.hasItems"
+      class="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 py-16 text-center"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="mb-3 h-10 w-10 text-slate-300"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"
+        />
+      </svg>
+      <p class="font-medium text-slate-600">No items in inventory</p>
+      <p class="mt-1 text-sm text-slate-400">Add your first item to get started.</p>
+      <RouterLink
+        to="/inventory/create"
+        class="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+      >
+        Add item
+      </RouterLink>
+    </div>
+
+    <!-- Item table -->
+    <div v-else class="overflow-hidden rounded-xl border border-slate-200">
+      <table class="w-full text-sm">
+        <thead
+          class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+        >
+          <tr>
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Category</th>
+            <th class="px-4 py-3 text-right">Quantity</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          <tr v-for="item in store.items" :key="item.id" class="transition hover:bg-slate-50">
+            <!-- Name -->
+            <td class="px-4 py-3">
+              <RouterLink
+                :to="`/inventory/${item.id}`"
+                class="font-medium text-slate-900 hover:underline"
+              >
+                {{ item.name }}
+              </RouterLink>
+              <p v-if="item.description" class="mt-0.5 truncate text-xs text-slate-400 max-w-xs">
+                {{ item.description }}
+              </p>
+            </td>
+
+            <!-- Category -->
+            <td class="px-4 py-3">
+              <span
+                v-if="item.category"
+                class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700"
+              >
+                {{ item.category.name }}
+              </span>
+              <span v-else class="text-xs text-slate-400">—</span>
+            </td>
+
+            <!-- Quantity -->
+            <td class="px-4 py-3 text-right font-mono font-medium text-slate-900">
+              {{ item.quantity }}
+            </td>
+
+            <!-- Low stock badge -->
+            <td class="px-4 py-3">
+              <span
+                v-if="item.is_low_stock"
+                class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700"
+              >
+                <span class="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                Low stock
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700"
+              >
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                In stock
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-4 py-3 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <RouterLink
+                  :to="`/inventory/${item.id}/edit`"
+                  class="rounded-md px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+                >
+                  Edit
+                </RouterLink>
+
+                <!-- Delete with confirmation -->
+                <template v-if="confirmDeleteId === item.id">
+                  <span class="text-xs text-slate-500">Delete?</span>
+                  <button
+                    class="rounded-md bg-red-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-red-700 disabled:opacity-60"
+                    :disabled="store.isDeleting"
+                    @click="confirmDelete(item.id)"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    class="rounded-md px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100"
+                    @click="confirmDeleteId = null"
+                  >
+                    No
+                  </button>
+                </template>
+                <button
+                  v-else
+                  class="rounded-md px-2.5 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
+                  @click="confirmDeleteId = item.id"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mutation error (e.g. delete failed) -->
+    <div
+      v-if="store.mutationError"
+      class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      role="alert"
+    >
+      {{ store.mutationError }}
+      <button class="ml-2 underline" @click="store.clearMutationError()">Dismiss</button>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useInventoryStore } from './inventoryStore';
+
+const store = useInventoryStore();
+const confirmDeleteId = ref<number | null>(null);
+
+onMounted(() => {
+  store.fetchItems();
+});
+
+async function confirmDelete(itemId: number): Promise<void> {
+  await store.deleteItem(itemId);
+  confirmDeleteId.value = null;
+}
+</script>
