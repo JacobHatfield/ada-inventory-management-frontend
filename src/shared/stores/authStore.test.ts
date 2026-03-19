@@ -1,0 +1,207 @@
+import { setActivePinia, createPinia } from 'pinia';
+import { vi } from 'vitest';
+import { useAuthStore } from './authStore';
+import { authService } from '../services/authService';
+
+vi.mock('../services/apiClient', () => ({
+  setAuthTokenProvider: vi.fn(),
+}));
+
+vi.mock('../services/authService', () => ({
+  authService: {
+    login: vi.fn(),
+    register: vi.fn(),
+    getCurrentUser: vi.fn(),
+    forgotPassword: vi.fn(),
+    resetPassword: vi.fn(),
+  },
+}));
+
+const mockUser = {
+  id: 1,
+  email: 'test@example.com',
+  full_name: 'Test User',
+  is_active: true,
+};
+
+const mockTokenResponse = {
+  access_token: 'mock-jwt-token',
+  token_type: 'bearer',
+};
+
+describe('authStore', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  describe('login()', () => {
+    it('stores token and user on success', async () => {
+      vi.mocked(authService.login).mockResolvedValue(mockTokenResponse);
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.login({ email: 'test@example.com', password: 'password123' });
+
+      expect(store.token).toBe('mock-jwt-token');
+      expect(store.user).toEqual(mockUser);
+      expect(store.isAuthenticated).toBe(true);
+      expect(store.loginError).toBeNull();
+    });
+
+    it('persists token to localStorage on success', async () => {
+      vi.mocked(authService.login).mockResolvedValue(mockTokenResponse);
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.login({ email: 'test@example.com', password: 'password123' });
+
+      expect(localStorage.getItem('ada_inventory_access_token')).toBe('mock-jwt-token');
+    });
+
+    it('sets loginError and throws on bad credentials', async () => {
+      vi.mocked(authService.login).mockRejectedValue(new Error('Invalid credentials'));
+
+      const store = useAuthStore();
+      await expect(store.login({ email: 'test@example.com', password: 'wrong' })).rejects.toThrow(
+        'Invalid credentials',
+      );
+
+      expect(store.token).toBeNull();
+      expect(store.user).toBeNull();
+      expect(store.isAuthenticated).toBe(false);
+      expect(store.loginError).toBe('Invalid credentials');
+    });
+
+    it('resets isLoggingIn to false after completion', async () => {
+      vi.mocked(authService.login).mockResolvedValue(mockTokenResponse);
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.login({ email: 'test@example.com', password: 'password123' });
+
+      expect(store.isLoggingIn).toBe(false);
+    });
+
+    it('resets isLoggingIn to false even when login fails', async () => {
+      vi.mocked(authService.login).mockRejectedValue(new Error('Server error'));
+
+      const store = useAuthStore();
+      await store.login({ email: 'test@example.com', password: 'password123' }).catch(() => {});
+
+      expect(store.isLoggingIn).toBe(false);
+    });
+  });
+
+  describe('register()', () => {
+    it('registers and auto-logs in on success', async () => {
+      vi.mocked(authService.register).mockResolvedValue(mockUser);
+      vi.mocked(authService.login).mockResolvedValue(mockTokenResponse);
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.register({ email: 'test@example.com', password: 'password123' });
+
+      expect(store.token).toBe('mock-jwt-token');
+      expect(store.user).toEqual(mockUser);
+      expect(store.isAuthenticated).toBe(true);
+    });
+
+    it('sets registerError and throws when registration fails', async () => {
+      vi.mocked(authService.register).mockRejectedValue(new Error('Email already in use'));
+
+      const store = useAuthStore();
+      await expect(
+        store.register({ email: 'existing@example.com', password: 'password123' }),
+      ).rejects.toThrow();
+
+      expect(store.registerError).toBe('Email already in use');
+      expect(store.isAuthenticated).toBe(false);
+    });
+
+    it('resets isRegistering to false after success', async () => {
+      vi.mocked(authService.register).mockResolvedValue(mockUser);
+      vi.mocked(authService.login).mockResolvedValue(mockTokenResponse);
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.register({ email: 'test@example.com', password: 'password123' });
+
+      expect(store.isRegistering).toBe(false);
+    });
+
+    it('resets isRegistering to false even when registration fails', async () => {
+      vi.mocked(authService.register).mockRejectedValue(new Error('Server error'));
+
+      const store = useAuthStore();
+      await store.register({ email: 'test@example.com', password: 'password123' }).catch(() => {});
+
+      expect(store.isRegistering).toBe(false);
+    });
+  });
+
+  describe('initializeSession()', () => {
+    it('restores user when a valid token is in localStorage', async () => {
+      localStorage.setItem('ada_inventory_access_token', 'stored-token');
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.initializeSession();
+
+      expect(store.token).toBe('stored-token');
+      expect(store.user).toEqual(mockUser);
+      expect(store.initialized).toBe(true);
+    });
+
+    it('clears session when stored token is rejected by the server', async () => {
+      localStorage.setItem('ada_inventory_access_token', 'expired-token');
+      vi.mocked(authService.getCurrentUser).mockRejectedValue(new Error('Unauthorized'));
+
+      const store = useAuthStore();
+      await store.initializeSession();
+
+      expect(store.token).toBeNull();
+      expect(store.user).toBeNull();
+      expect(localStorage.getItem('ada_inventory_access_token')).toBeNull();
+    });
+
+    it('does nothing when no token is in localStorage', async () => {
+      const store = useAuthStore();
+      await store.initializeSession();
+
+      expect(store.token).toBeNull();
+      expect(store.user).toBeNull();
+      expect(store.initialized).toBe(true);
+      expect(authService.getCurrentUser).not.toHaveBeenCalled();
+    });
+
+    it('does not re-initialize if already initialized', async () => {
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      store.markLoggedOut();
+      await store.initializeSession();
+
+      expect(authService.getCurrentUser).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('markLoggedOut()', () => {
+    it('clears token, user, and localStorage', async () => {
+      vi.mocked(authService.login).mockResolvedValue(mockTokenResponse);
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
+
+      const store = useAuthStore();
+      await store.login({ email: 'test@example.com', password: 'password123' });
+
+      store.markLoggedOut();
+
+      expect(store.token).toBeNull();
+      expect(store.user).toBeNull();
+      expect(store.isAuthenticated).toBe(false);
+      expect(store.initialized).toBe(true);
+      expect(localStorage.getItem('ada_inventory_access_token')).toBeNull();
+    });
+  });
+});
