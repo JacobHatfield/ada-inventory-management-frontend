@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import DashboardPage from '../app/pages/DashboardPage.vue';
-import LoginPage from '../app/pages/LoginPage.vue';
+import LoginPage from '../features/auth/LoginPage.vue';
 import { useAuthStore } from '../shared/stores/authStore';
 import { useRouteUiStore } from '../shared/stores/routeUiStore'; // Added import for route UI store
 
