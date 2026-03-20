@@ -118,7 +118,7 @@
         ]"
       >
         <option :value="null">— No category —</option>
-        <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+        <option v-for="cat in categoryStore.categories" :key="cat.id" :value="cat.id">
           {{ cat.name }}
         </option>
       </select>
@@ -169,16 +169,15 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
+import { watch, onMounted } from 'vue';
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
-import type { Category } from '@/shared/types';
+import { useCategoryStore } from '@/features/categories/categoryStore';
 import type { InventoryCreateRequest } from '@/shared/types';
 
 interface Props {
   initialValues?: Partial<InventoryCreateRequest>;
-  categories?: Category[];
   isSubmitting?: boolean;
   serverError?: string | null;
   submitLabel?: string;
@@ -187,11 +186,23 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   initialValues: undefined,
-  categories: () => [],
   isSubmitting: false,
   serverError: null,
   submitLabel: 'Save item',
   showCancel: false,
+});
+
+const emit = defineEmits<{
+  submit: [values: InventoryCreateRequest];
+  cancel: [];
+}>();
+
+const categoryStore = useCategoryStore();
+
+onMounted(() => {
+  if (!categoryStore.hasCategories) {
+    categoryStore.fetchCategories();
+  }
 });
 
 const emit = defineEmits<{
