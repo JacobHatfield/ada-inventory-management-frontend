@@ -64,8 +64,7 @@ export const useCategoryStore = defineStore('category', () => {
       categories.value.unshift(newCategory);
       return newCategory;
     } catch (error) {
-      mutationError.value =
-        error instanceof Error ? error.message : 'Failed to create category';
+      mutationError.value = error instanceof Error ? error.message : 'Failed to create category';
       throw error;
     } finally {
       isCreating.value = false;
@@ -90,8 +89,7 @@ export const useCategoryStore = defineStore('category', () => {
       }
       return updated;
     } catch (error) {
-      mutationError.value =
-        error instanceof Error ? error.message : 'Failed to update category';
+      mutationError.value = error instanceof Error ? error.message : 'Failed to update category';
       throw error;
     } finally {
       isUpdating.value = false;
@@ -109,8 +107,7 @@ export const useCategoryStore = defineStore('category', () => {
         selectedCategory.value = null;
       }
     } catch (error) {
-      mutationError.value =
-        error instanceof Error ? error.message : 'Failed to delete category';
+      mutationError.value = error instanceof Error ? error.message : 'Failed to delete category';
       throw error;
     } finally {
       isDeleting.value = false;

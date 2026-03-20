@@ -205,10 +205,7 @@ onMounted(() => {
   }
 });
 
-const emit = defineEmits<{
-  submit: [values: InventoryCreateRequest];
-  cancel: [];
-}>();
+
 
 const schema = toTypedSchema(
   z.object({

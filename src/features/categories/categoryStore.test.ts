@@ -33,7 +33,9 @@ describe('categoryStore', () => {
 
   describe('fetchCategories()', () => {
     it('populates categories and clears listError on success', async () => {
-      vi.mocked(categoryService.list).mockResolvedValue({ items: [mockCategory, mockCategory2] } as any);
+      vi.mocked(categoryService.list).mockResolvedValue({
+        items: [mockCategory, mockCategory2],
+      });
 
       const store = useCategoryStore();
       await store.fetchCategories();

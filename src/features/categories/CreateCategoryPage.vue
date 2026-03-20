@@ -36,7 +36,7 @@ async function onSubmit(values: CategoryCreateRequest) {
   try {
     await store.createCategory(values);
     router.push('/categories');
-  } catch (error) {
+  } catch {
     // Error is handled in the store and passed to the form via props
   }
 }

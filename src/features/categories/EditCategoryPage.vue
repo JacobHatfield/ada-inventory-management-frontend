@@ -74,7 +74,7 @@ async function onSubmit(values: CategoryCreateRequest) {
     if (isNaN(categoryId)) return;
     await store.updateCategory(categoryId, values);
     router.push('/categories');
-  } catch (error) {
+  } catch {
     // Error is handled in the store and passed to the form via props
   }
 }
