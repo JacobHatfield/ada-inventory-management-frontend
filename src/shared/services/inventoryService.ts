@@ -4,7 +4,6 @@ import type {
   InventoryItem,
   InventoryListQueryParams,
   InventoryListResponse,
-  InventoryStockUpdateRequest,
   InventoryUpdateRequest,
   PaginatedResponse,
 } from '../types';
@@ -15,46 +14,44 @@ export const inventoryService = {
     params: InventoryListQueryParams = {},
   ): Promise<InventoryListResponse | PaginatedResponse<InventoryItem>> {
     const query = toQueryString(params as Record<string, unknown>);
-    return apiRequest<InventoryListResponse | PaginatedResponse<InventoryItem>>(`/items${query}`);
+    return apiRequest<InventoryListResponse | PaginatedResponse<InventoryItem>>(`/inventory/${query}`);
   },
 
   getById(itemId: number): Promise<InventoryItem> {
-    return apiRequest<InventoryItem>(`/items/${itemId}`);
+    return apiRequest<InventoryItem>(`/inventory/${itemId}`);
   },
 
   create(payload: InventoryCreateRequest): Promise<InventoryItem> {
-    return apiRequest<InventoryItem>('/items', {
+    return apiRequest<InventoryItem>('/inventory/', {
       method: 'POST',
       body: payload,
     });
   },
 
   update(itemId: number, payload: InventoryUpdateRequest): Promise<InventoryItem> {
-    return apiRequest<InventoryItem>(`/items/${itemId}`, {
-      method: 'PATCH',
+    return apiRequest<InventoryItem>(`/inventory/${itemId}`, {
+      method: 'PUT',
       body: payload,
     });
   },
 
   remove(itemId: number): Promise<void> {
-    return apiRequest<void>(`/items/${itemId}`, {
+    return apiRequest<void>(`/inventory/${itemId}`, {
       method: 'DELETE',
     });
   },
 
   incrementStock(itemId: number, amount = 1): Promise<InventoryItem> {
-    const payload: InventoryStockUpdateRequest = { amount };
-    return apiRequest<InventoryItem>(`/items/${itemId}/stock/increment`, {
-      method: 'PATCH',
-      body: payload,
+    return apiRequest<InventoryItem>(`/inventory/${itemId}/increment`, {
+      method: 'POST',
+      body: { quantity_change: amount },
     });
   },
 
   decrementStock(itemId: number, amount = 1): Promise<InventoryItem> {
-    const payload: InventoryStockUpdateRequest = { amount };
-    return apiRequest<InventoryItem>(`/items/${itemId}/stock/decrement`, {
-      method: 'PATCH',
-      body: payload,
+    return apiRequest<InventoryItem>(`/inventory/${itemId}/decrement`, {
+      method: 'POST',
+      body: { quantity_change: amount },
     });
   },
 };
