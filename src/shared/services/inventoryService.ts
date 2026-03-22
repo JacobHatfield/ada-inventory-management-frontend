@@ -14,7 +14,9 @@ export const inventoryService = {
     params: InventoryListQueryParams = {},
   ): Promise<InventoryListResponse | PaginatedResponse<InventoryItem>> {
     const query = toQueryString(params as Record<string, unknown>);
-    return apiRequest<InventoryListResponse | PaginatedResponse<InventoryItem>>(`/inventory/${query}`);
+    return apiRequest<InventoryListResponse | PaginatedResponse<InventoryItem>>(
+      `/inventory/${query}`,
+    );
   },
 
   getById(itemId: number): Promise<InventoryItem> {

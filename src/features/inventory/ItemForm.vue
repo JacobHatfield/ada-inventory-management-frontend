@@ -205,8 +205,6 @@ onMounted(() => {
   }
 });
 
-
-
 const schema = toTypedSchema(
   z.object({
     name: z.string().min(1, 'Name is required'),
