@@ -3,3 +3,4 @@ export * from './audit';
 export * from './categories';
 export * from './common';
 export * from './inventory';
+export * from './dashboard';
