@@ -202,7 +202,7 @@ import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useInventoryStore } from './inventoryStore';
 import InventoryFilters from './components/InventoryFilters.vue';
-import type { StockStatus } from '@/shared/types';
+import type { StockStatus, InventoryListQueryParams } from '@/shared/types';
 import type { SortOrder } from '@/shared/types/common';
 
 const route = useRoute();
@@ -236,10 +236,10 @@ watch(
       sort_order: newQuery.sort_order as SortOrder | undefined,
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
-const onFiltersChanged = (filters: any) => {
+const onFiltersChanged = (filters: InventoryListQueryParams) => {
   // Build new query object, dropping undefined/null values
   const query = { ...route.query };
 

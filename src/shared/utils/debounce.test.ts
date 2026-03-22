@@ -30,7 +30,7 @@ describe('debounce', () => {
 
     debounced();
     vi.advanceTimersByTime(100);
-    
+
     // Call again, which should reset the 200ms timer
     debounced();
     vi.advanceTimersByTime(100);
