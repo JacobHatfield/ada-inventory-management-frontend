@@ -28,6 +28,16 @@
       </RouterLink>
     </div>
 
+    <!-- Filters -->
+    <InventoryFilters
+      :initial-search="initialFilters.search"
+      :initial-category-id="initialFilters.category_id"
+      :initial-stock-status="initialFilters.stock_status"
+      :initial-sort-by="initialFilters.sort_by"
+      :initial-sort-order="initialFilters.sort_order"
+      @change="onFiltersChanged"
+    />
+
     <!-- Error banner -->
     <div
       v-if="store.listError"
@@ -188,15 +198,71 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useInventoryStore } from './inventoryStore';
+import InventoryFilters from './components/InventoryFilters.vue';
+import type { StockStatus } from '@/shared/types';
+import type { SortOrder } from '@/shared/types/common';
 
+const route = useRoute();
+const router = useRouter();
 const store = useInventoryStore();
+
 const confirmDeleteId = ref<number | null>(null);
 
+// Parse initial filters from URL
+const initialFilters = {
+  search: route.query.search as string | undefined,
+  category_id: route.query.category_id ? Number(route.query.category_id) : undefined,
+  stock_status: route.query.stock_status as StockStatus | undefined,
+  sort_by: route.query.sort_by as 'name' | 'quantity' | 'created_at' | 'updated_at' | undefined,
+  sort_order: route.query.sort_order as SortOrder | undefined,
+};
+
 onMounted(() => {
-  store.fetchItems();
+  store.fetchItems(initialFilters);
 });
+
+// Watch URL query changes to fetch data
+watch(
+  () => route.query,
+  (newQuery) => {
+    store.fetchItems({
+      search: newQuery.search as string | undefined,
+      category_id: newQuery.category_id ? Number(newQuery.category_id) : undefined,
+      stock_status: newQuery.stock_status as StockStatus | undefined,
+      sort_by: newQuery.sort_by as 'name' | 'quantity' | 'created_at' | 'updated_at' | undefined,
+      sort_order: newQuery.sort_order as SortOrder | undefined,
+    });
+  },
+  { deep: true }
+);
+
+const onFiltersChanged = (filters: any) => {
+  // Build new query object, dropping undefined/null values
+  const query = { ...route.query };
+
+  // Update fields
+  if (filters.search) query.search = filters.search;
+  else delete query.search;
+
+  if (filters.category_id) query.category_id = String(filters.category_id);
+  else delete query.category_id;
+
+  if (filters.stock_status) query.stock_status = filters.stock_status;
+  else delete query.stock_status;
+
+  if (filters.sort_by) query.sort_by = filters.sort_by;
+  else delete query.sort_by;
+
+  if (filters.sort_order) query.sort_order = filters.sort_order;
+  else delete query.sort_order;
+
+  // Push to router
+  // We use push so users can use the back button.
+  router.push({ query });
+};
 
 async function confirmDelete(itemId: number): Promise<void> {
   await store.deleteItem(itemId);
