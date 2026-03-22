@@ -7,6 +7,9 @@ import InventoryListPage from '../features/inventory/InventoryListPage.vue';
 import CreateItemPage from '../features/inventory/CreateItemPage.vue';
 import ItemDetailPage from '../features/inventory/ItemDetailPage.vue';
 import EditItemPage from '../features/inventory/EditItemPage.vue';
+import CategoryListPage from '../features/categories/CategoryListPage.vue';
+import CreateCategoryPage from '../features/categories/CreateCategoryPage.vue';
+import EditCategoryPage from '../features/categories/EditCategoryPage.vue';
 import { useAuthStore } from '../shared/stores/authStore';
 import { useRouteUiStore } from '../shared/stores/routeUiStore'; // Added import for route UI store
 
@@ -46,6 +49,24 @@ const authenticatedRoutes = [
     path: '/inventory/:id/edit',
     name: 'inventory-edit',
     component: EditItemPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/categories',
+    name: 'categories',
+    component: CategoryListPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/categories/create',
+    name: 'category-create',
+    component: CreateCategoryPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/categories/:id/edit',
+    name: 'category-edit',
+    component: EditCategoryPage,
     meta: { requiresAuth: true },
   },
 ];

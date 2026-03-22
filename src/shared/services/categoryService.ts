@@ -14,19 +14,23 @@ export const categoryService = {
     params: CategoryListQueryParams = {},
   ): Promise<CategoryListResponse | PaginatedResponse<Category>> {
     const query = toQueryString(params as Record<string, unknown>);
-    return apiRequest<CategoryListResponse | PaginatedResponse<Category>>(`/categories${query}`);
+    return apiRequest<CategoryListResponse | PaginatedResponse<Category>>(`/categories/${query}`);
   },
 
   create(payload: CategoryCreateRequest): Promise<Category> {
-    return apiRequest<Category>('/categories', {
+    return apiRequest<Category>('/categories/', {
       method: 'POST',
       body: payload,
     });
   },
 
+  getById(categoryId: number): Promise<Category> {
+    return apiRequest<Category>(`/categories/${categoryId}`);
+  },
+
   update(categoryId: number, payload: CategoryUpdateRequest): Promise<Category> {
     return apiRequest<Category>(`/categories/${categoryId}`, {
-      method: 'PATCH',
+      method: 'PUT',
       body: payload,
     });
   },
