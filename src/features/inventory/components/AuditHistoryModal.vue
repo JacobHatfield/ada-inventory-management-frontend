@@ -80,7 +80,11 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200 bg-white">
-              <tr v-for="log in store.auditHistory" :key="log.id" class="hover:bg-slate-50 transition">
+              <tr
+                v-for="log in store.auditHistory"
+                :key="log.id"
+                class="hover:bg-slate-50 transition"
+              >
                 <td class="whitespace-nowrap px-4 py-3 text-xs text-slate-600">
                   {{ formatDateTime(log.timestamp) }}
                 </td>
@@ -99,35 +103,41 @@
                   <span v-else class="text-slate-400">—</span>
                 </td>
                 <td class="px-4 py-3 text-xs">
-                  <div v-if="log.old_value !== null || log.new_value !== null" class="flex flex-col gap-1">
+                  <div
+                    v-if="log.old_value !== null || log.new_value !== null"
+                    class="flex flex-col gap-1"
+                  >
                     <div class="flex items-center gap-2">
-                       <span class="text-slate-500" :class="{ 'line-through': log.new_value !== null }">
-                         {{ formatValue(log.old_value) }}
-                       </span>
-                       <template v-if="log.old_value !== null && log.new_value !== null">
-                         <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           class="h-3 w-3 text-slate-400"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           stroke="currentColor"
-                         >
-                           <path
-                             stroke-linecap="round"
-                             stroke-linejoin="round"
-                             stroke-width="2"
-                             d="M13 7l5 5m0 0l-5 5m5-5H6"
-                           />
-                         </svg>
-                         <span class="font-medium text-emerald-600">
-                           {{ formatValue(log.new_value) }}
-                         </span>
-                       </template>
-                       <template v-else-if="log.new_value !== null">
-                         <span class="font-medium text-emerald-600">
-                           {{ formatValue(log.new_value) }}
-                         </span>
-                       </template>
+                      <span
+                        class="text-slate-500"
+                        :class="{ 'line-through': log.new_value !== null }"
+                      >
+                        {{ formatValue(log.old_value) }}
+                      </span>
+                      <template v-if="log.old_value !== null && log.new_value !== null">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-3 w-3 text-slate-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
+                        </svg>
+                        <span class="font-medium text-emerald-600">
+                          {{ formatValue(log.new_value) }}
+                        </span>
+                      </template>
+                      <template v-else-if="log.new_value !== null">
+                        <span class="font-medium text-emerald-600">
+                          {{ formatValue(log.new_value) }}
+                        </span>
+                      </template>
                     </div>
                   </div>
                   <span v-else class="text-slate-400">—</span>

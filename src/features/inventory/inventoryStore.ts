@@ -176,7 +176,10 @@ export const useInventoryStore = defineStore('inventory', () => {
     }
   }
 
-  async function fetchAuditHistory(itemId: number, params: AuditListQueryParams = {}): Promise<void> {
+  async function fetchAuditHistory(
+    itemId: number,
+    params: AuditListQueryParams = {},
+  ): Promise<void> {
     isFetchingHistory.value = true;
     auditError.value = null;
 
