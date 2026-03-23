@@ -99,23 +99,36 @@
                   <span v-else class="text-slate-400">—</span>
                 </td>
                 <td class="px-4 py-3 text-xs">
-                  <div v-if="log.old_value !== null || log.new_value !== null" class="flex items-center gap-2">
-                    <span class="text-slate-500 line-through">{{ log.old_value ?? 'None' }}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-3 w-3 text-slate-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                    <span class="font-medium text-emerald-600">{{ log.new_value ?? 'None' }}</span>
+                  <div v-if="log.old_value !== null || log.new_value !== null" class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                       <span class="text-slate-500" :class="{ 'line-through': log.new_value !== null }">
+                         {{ formatValue(log.old_value) }}
+                       </span>
+                       <template v-if="log.old_value !== null && log.new_value !== null">
+                         <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           class="h-3 w-3 text-slate-400"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           stroke="currentColor"
+                         >
+                           <path
+                             stroke-linecap="round"
+                             stroke-linejoin="round"
+                             stroke-width="2"
+                             d="M13 7l5 5m0 0l-5 5m5-5H6"
+                           />
+                         </svg>
+                         <span class="font-medium text-emerald-600">
+                           {{ formatValue(log.new_value) }}
+                         </span>
+                       </template>
+                       <template v-else-if="log.new_value !== null">
+                         <span class="font-medium text-emerald-600">
+                           {{ formatValue(log.new_value) }}
+                         </span>
+                       </template>
+                    </div>
                   </div>
                   <span v-else class="text-slate-400">—</span>
                 </td>
@@ -198,6 +211,23 @@ const formatAction = (action: string) => {
 
 const formatFieldName = (field: string) => {
   return field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ');
+};
+
+const formatValue = (value: string | null) => {
+  if (value === null) return 'None';
+  try {
+    if (value.startsWith('{') && value.endsWith('}')) {
+      const parsed = JSON.parse(value);
+      if (typeof parsed === 'object' && parsed !== null) {
+        return Object.entries(parsed)
+          .map(([k, v]) => `${formatFieldName(k)}: ${v}`)
+          .join(', ');
+      }
+    }
+  } catch {
+    // Not valid JSON or parsing error
+  }
+  return value;
 };
 
 const getActionClass = (action: string) => {
