@@ -38,9 +38,7 @@ describe('dashboardStore', () => {
 
   it('handles fetch summary error', async () => {
     const store = useDashboardStore();
-    vi.mocked(dashboardService.getStockSummary).mockRejectedValueOnce({
-      response: { data: { detail: 'API Error' } },
-    });
+    vi.mocked(dashboardService.getStockSummary).mockRejectedValueOnce(new Error('API Error'));
 
     await store.fetchSummary();
     expect(store.isLoadingSummary).toBe(false);
