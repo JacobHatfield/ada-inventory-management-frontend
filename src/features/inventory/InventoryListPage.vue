@@ -154,6 +154,13 @@
                   Edit
                 </RouterLink>
 
+                <button
+                  class="rounded-md px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+                  @click="openAuditLogs(item)"
+                >
+                  History
+                </button>
+
                 <!-- Delete with confirmation -->
                 <template v-if="confirmDeleteId === item.id">
                   <span class="text-xs text-slate-500">Delete?</span>
@@ -205,6 +212,14 @@
       {{ store.mutationError }}
       <button class="ml-2 underline" @click="store.clearMutationError()">Dismiss</button>
     </div>
+
+    <!-- Audit History Modal -->
+    <AuditHistoryModal
+      :is-open="isAuditModalOpen"
+      :item-id="auditItemId"
+      :item-name="auditItemName"
+      @close="isAuditModalOpen = false"
+    />
   </section>
 </template>
 
@@ -213,8 +228,9 @@ import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useInventoryStore } from './inventoryStore';
 import InventoryFilters from './components/InventoryFilters.vue';
+import AuditHistoryModal from './components/AuditHistoryModal.vue';
 import AppPagination from '@/shared/components/AppPagination.vue';
-import type { StockStatus, InventoryListQueryParams } from '@/shared/types';
+import type { StockStatus, InventoryListQueryParams, InventoryItem } from '@/shared/types';
 import type { SortOrder } from '@/shared/types/common';
 
 const route = useRoute();
@@ -222,6 +238,15 @@ const router = useRouter();
 const store = useInventoryStore();
 
 const confirmDeleteId = ref<number | null>(null);
+const isAuditModalOpen = ref(false);
+const auditItemId = ref<number | null>(null);
+const auditItemName = ref<string>('');
+
+const openAuditLogs = (item: InventoryItem) => {
+  auditItemId.value = item.id;
+  auditItemName.value = item.name;
+  isAuditModalOpen.value = true;
+};
 
 // Parse initial filters from URL
 const initialFilters = {
