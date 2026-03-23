@@ -42,7 +42,12 @@ export const useInventoryStore = defineStore('inventory', () => {
     try {
       const response = await inventoryService.list(params);
       items.value = response.items;
-      paginationMeta.value = response.meta ?? null;
+      paginationMeta.value = {
+        page: response.page,
+        page_size: response.page_size,
+        total_items: response.total,
+        total_pages: response.total_pages,
+      };
     } catch (error) {
       listError.value = error instanceof Error ? error.message : 'Failed to load inventory';
     } finally {

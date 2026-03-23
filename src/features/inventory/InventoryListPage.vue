@@ -230,8 +230,8 @@ const initialFilters = {
   stock_status: route.query.stock_status as StockStatus | undefined,
   sort_by: route.query.sort_by as 'name' | 'quantity' | 'created_at' | 'updated_at' | undefined,
   sort_order: route.query.sort_order as SortOrder | undefined,
-  page: route.query.page ? Number(route.query.page) : undefined,
-  page_size: route.query.page_size ? Number(route.query.page_size) : undefined,
+  page: route.query.page ? Number(route.query.page) : 1,
+  page_size: route.query.page_size ? Number(route.query.page_size) : 10,
 };
 
 onMounted(() => {
@@ -248,8 +248,8 @@ watch(
       stock_status: newQuery.stock_status as StockStatus | undefined,
       sort_by: newQuery.sort_by as 'name' | 'quantity' | 'created_at' | 'updated_at' | undefined,
       sort_order: newQuery.sort_order as SortOrder | undefined,
-      page: newQuery.page ? Number(newQuery.page) : undefined,
-      page_size: newQuery.page_size ? Number(newQuery.page_size) : undefined,
+      page: newQuery.page ? Number(newQuery.page) : 1,
+      page_size: newQuery.page_size ? Number(newQuery.page_size) : 10,
     });
   },
   { deep: true },
