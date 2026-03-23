@@ -28,7 +28,16 @@ describe('dashboardService', () => {
   });
 
   it('getLowStockItems calls the correct endpoint and returns data', async () => {
-    const mockData = [{ id: 1, name: 'Low Item', quantity: 1, low_stock_threshold: 5, description: null, category_id: 2 }];
+    const mockData = [
+      {
+        id: 1,
+        name: 'Low Item',
+        quantity: 1,
+        low_stock_threshold: 5,
+        description: null,
+        category_id: 2,
+      },
+    ];
     vi.mocked(apiRequest).mockResolvedValueOnce(mockData);
 
     const result = await dashboardService.getLowStockItems();

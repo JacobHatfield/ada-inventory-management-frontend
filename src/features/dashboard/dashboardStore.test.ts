@@ -49,7 +49,14 @@ describe('dashboardStore', () => {
   it('fetches low stock items successfully', async () => {
     const store = useDashboardStore();
     const mockItems = [
-      { id: 1, name: 'Item', quantity: 2, description: null, category_id: 1, low_stock_threshold: 5 },
+      {
+        id: 1,
+        name: 'Item',
+        quantity: 2,
+        description: null,
+        category_id: 1,
+        low_stock_threshold: 5,
+      },
     ];
     vi.mocked(dashboardService.getLowStockItems).mockResolvedValueOnce(mockItems);
 

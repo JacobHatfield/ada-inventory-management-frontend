@@ -43,10 +43,10 @@ describe('AppPagination.vue', () => {
       },
     });
 
-    const pageButtons = wrapper.findAll('button').filter(b => !isNaN(Number(b.text())));
+    const pageButtons = wrapper.findAll('button').filter((b) => !isNaN(Number(b.text())));
     expect(pageButtons).toHaveLength(5);
-    
-    const page3Btn = pageButtons.find(b => b.text() === '3');
+
+    const page3Btn = pageButtons.find((b) => b.text() === '3');
     await page3Btn?.trigger('click');
 
     expect(wrapper.emitted('update:page')).toBeTruthy();
@@ -84,7 +84,7 @@ describe('AppPagination.vue', () => {
 
     const buttons = wrapper.findAll('button');
     const mobilePrev = buttons[0];
-    
+
     expect(mobilePrev.element.disabled).toBe(true);
   });
 
@@ -99,7 +99,7 @@ describe('AppPagination.vue', () => {
 
     const buttons = wrapper.findAll('button');
     const mobileNext = buttons[1];
-    
+
     expect(mobileNext.element.disabled).toBe(true);
   });
 });
