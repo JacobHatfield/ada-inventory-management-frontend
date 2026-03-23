@@ -56,7 +56,7 @@ describe('categoryStore', () => {
     });
 
     it('resets isFetchingList to false after completion', async () => {
-      vi.mocked(categoryService.list).mockResolvedValue([]);
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [] });
 
       const store = useCategoryStore();
       await store.fetchCategories();
@@ -89,7 +89,7 @@ describe('categoryStore', () => {
 
   describe('createCategory()', () => {
     it('prepends new category to the list and returns it', async () => {
-      vi.mocked(categoryService.list).mockResolvedValue([mockCategory2]);
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [mockCategory2] });
       vi.mocked(categoryService.create).mockResolvedValue(mockCategory);
 
       const store = useCategoryStore();
@@ -113,7 +113,7 @@ describe('categoryStore', () => {
 
   describe('updateCategory()', () => {
     it('updates the category in the list and returns updated category', async () => {
-      vi.mocked(categoryService.list).mockResolvedValue([mockCategory]);
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [mockCategory] });
       const updatedCategory = { ...mockCategory, name: 'Electro' };
       vi.mocked(categoryService.update).mockResolvedValue(updatedCategory);
 
@@ -140,7 +140,7 @@ describe('categoryStore', () => {
 
   describe('deleteCategory()', () => {
     it('removes category from the list on success', async () => {
-      vi.mocked(categoryService.list).mockResolvedValue([mockCategory, mockCategory2]);
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [mockCategory, mockCategory2] });
       vi.mocked(categoryService.remove).mockResolvedValue(undefined);
 
       const store = useCategoryStore();
@@ -170,7 +170,7 @@ describe('categoryStore', () => {
     });
 
     it('categoryOptions maps categories to value/label pairs', async () => {
-      vi.mocked(categoryService.list).mockResolvedValue([mockCategory, mockCategory2]);
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [mockCategory, mockCategory2] });
 
       const store = useCategoryStore();
       await store.fetchCategories();
