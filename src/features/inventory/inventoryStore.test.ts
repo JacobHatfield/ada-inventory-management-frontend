@@ -12,6 +12,7 @@ vi.mock('@/shared/services/inventoryService', () => ({
     remove: vi.fn(),
     incrementStock: vi.fn(),
     decrementStock: vi.fn(),
+    getAuditHistory: vi.fn(),
   },
 }));
 
@@ -310,6 +311,48 @@ describe('inventoryStore', () => {
       await expect(store.decrementStock(1)).rejects.toThrow();
 
       expect(store.mutationError).toBe('Cannot decrement');
+    });
+  });
+
+  describe('fetchAuditHistory()', () => {
+    const mockAuditLog = {
+      id: 1,
+      inventory_item_id: 1,
+      user_id: 1,
+      action: 'update',
+      field_name: 'quantity',
+      old_value: '10',
+      new_value: '5',
+      timestamp: '2023-01-01T00:00:00Z',
+    };
+
+    it('successfully fetches and updates auditHistory and auditPaginationMeta', async () => {
+      vi.mocked(inventoryService.getAuditHistory).mockResolvedValue({
+        items: [mockAuditLog],
+        total: 1,
+        page: 1,
+        page_size: 10,
+        total_pages: 1,
+      });
+
+      const store = useInventoryStore();
+      await store.fetchAuditHistory(1);
+
+      expect(store.auditHistory).toHaveLength(1);
+      expect(store.auditHistory[0].action).toBe('update');
+      expect(store.auditPaginationMeta?.total_items).toBe(1);
+      expect(store.isFetchingHistory).toBe(false);
+    });
+
+    it('sets auditError on failure', async () => {
+      vi.mocked(inventoryService.getAuditHistory).mockRejectedValue(new Error('Audit fail'));
+
+      const store = useInventoryStore();
+      await store.fetchAuditHistory(1);
+
+      expect(store.auditHistory).toHaveLength(0);
+      expect(store.auditError).toBe('Audit fail');
+      expect(store.isFetchingHistory).toBe(false);
     });
   });
 

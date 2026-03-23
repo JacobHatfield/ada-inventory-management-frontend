@@ -7,6 +7,8 @@ import type {
   InventoryUpdateRequest,
   InventoryListQueryParams,
   PaginationMeta,
+  AuditLog,
+  AuditListQueryParams,
 } from '@/shared/types';
 
 export const useInventoryStore = defineStore('inventory', () => {
@@ -14,6 +16,8 @@ export const useInventoryStore = defineStore('inventory', () => {
   const items = ref<InventoryItem[]>([]);
   const selectedItem = ref<InventoryItem | null>(null);
   const paginationMeta = ref<PaginationMeta | null>(null);
+  const auditHistory = ref<AuditLog[]>([]);
+  const auditPaginationMeta = ref<PaginationMeta | null>(null);
 
   // Loading flags
   const isFetchingList = ref(false);
@@ -22,11 +26,13 @@ export const useInventoryStore = defineStore('inventory', () => {
   const isUpdating = ref(false);
   const isDeleting = ref(false);
   const isUpdatingStock = ref(false);
+  const isFetchingHistory = ref(false);
 
   // Error state
   const listError = ref<string | null>(null);
   const itemError = ref<string | null>(null);
   const mutationError = ref<string | null>(null);
+  const auditError = ref<string | null>(null);
 
   // Computed
   const hasItems = computed(() => items.value.length > 0);
@@ -170,6 +176,29 @@ export const useInventoryStore = defineStore('inventory', () => {
     }
   }
 
+  async function fetchAuditHistory(
+    itemId: number,
+    params: AuditListQueryParams = {},
+  ): Promise<void> {
+    isFetchingHistory.value = true;
+    auditError.value = null;
+
+    try {
+      const response = await inventoryService.getAuditHistory(itemId, params);
+      auditHistory.value = response.items;
+      auditPaginationMeta.value = {
+        page: response.page,
+        page_size: response.page_size,
+        total_items: response.total,
+        total_pages: response.total_pages,
+      };
+    } catch (error) {
+      auditError.value = error instanceof Error ? error.message : 'Failed to load audit history';
+    } finally {
+      isFetchingHistory.value = false;
+    }
+  }
+
   function clearSelectedItem(): void {
     selectedItem.value = null;
     itemError.value = null;
@@ -184,6 +213,8 @@ export const useInventoryStore = defineStore('inventory', () => {
     items,
     selectedItem,
     paginationMeta,
+    auditHistory,
+    auditPaginationMeta,
     // Loading flags
     isFetchingList,
     isFetchingItem,
@@ -191,10 +222,12 @@ export const useInventoryStore = defineStore('inventory', () => {
     isUpdating,
     isDeleting,
     isUpdatingStock,
+    isFetchingHistory,
     // Errors
     listError,
     itemError,
     mutationError,
+    auditError,
     // Computed
     hasItems,
     lowStockItems,
@@ -206,6 +239,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     deleteItem,
     incrementStock,
     decrementStock,
+    fetchAuditHistory,
     clearSelectedItem,
     clearMutationError,
   };

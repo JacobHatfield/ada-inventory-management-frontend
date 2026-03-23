@@ -189,24 +189,49 @@
         <button class="ml-2 underline" @click="store.clearMutationError()">Dismiss</button>
       </div>
 
-      <!-- Audit history link (placeholder until Phase 4.2) -->
+      <!-- Audit history link -->
       <div class="rounded-xl border border-slate-200 bg-white px-5 py-4">
-        <p class="text-sm font-medium text-slate-700">Audit history</p>
-        <p class="mt-0.5 text-xs text-slate-400">Coming in Phase 4.2</p>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-slate-700">Audit history</p>
+            <p class="mt-0.5 text-xs text-slate-400">Track all changes for this item</p>
+          </div>
+          <button
+            class="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+            @click="openAuditLogs"
+          >
+            View History
+          </button>
+        </div>
       </div>
+
+      <!-- Audit History Modal -->
+      <AuditHistoryModal
+        :is-open="isAuditModalOpen"
+        :item-id="itemId"
+        :item-name="itemName"
+        @close="isAuditModalOpen = false"
+      />
     </template>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useInventoryStore } from './inventoryStore';
+import AuditHistoryModal from './components/AuditHistoryModal.vue';
 
 const store = useInventoryStore();
 const route = useRoute();
 
+const isAuditModalOpen = ref(false);
 const itemId = computed(() => Number(route.params.id));
+const itemName = computed(() => store.selectedItem?.name || '');
+
+const openAuditLogs = () => {
+  isAuditModalOpen.value = true;
+};
 
 onMounted(() => {
   store.fetchItemById(itemId.value);
