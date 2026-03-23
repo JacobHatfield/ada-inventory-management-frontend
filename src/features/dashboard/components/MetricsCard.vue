@@ -11,7 +11,11 @@
         <p class="text-sm font-medium text-slate-500">{{ title }}</p>
         <div class="flex items-baseline gap-2">
           <p class="text-2xl font-bold text-slate-900">{{ value }}</p>
-          <span v-if="trend" class="text-sm font-medium" :class="trend > 0 ? 'text-emerald-600' : 'text-red-600'">
+          <span
+            v-if="trend"
+            class="text-sm font-medium"
+            :class="trend > 0 ? 'text-emerald-600' : 'text-red-600'"
+          >
             {{ trend > 0 ? '+' : '' }}{{ trend }}
           </span>
         </div>

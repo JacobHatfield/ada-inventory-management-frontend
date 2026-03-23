@@ -19,8 +19,8 @@ export const useDashboardStore = defineStore('dashboard', {
       try {
         const data = await dashboardService.getStockSummary();
         this.summary = data;
-      } catch (err: any) {
-        this.error = err?.response?.data?.detail || 'Failed to fetch dashboard summary.';
+      } catch (err: unknown) {
+        this.error = err instanceof Error ? err.message : 'Failed to fetch dashboard summary.';
         console.error('Error fetching dashboard summary:', err);
       } finally {
         this.isLoadingSummary = false;
@@ -33,16 +33,16 @@ export const useDashboardStore = defineStore('dashboard', {
       try {
         const data = await dashboardService.getLowStockItems();
         this.lowStockItems = data;
-      } catch (err: any) {
-        this.error = err?.response?.data?.detail || 'Failed to fetch low stock items.';
+      } catch (err: unknown) {
+        this.error = err instanceof Error ? err.message : 'Failed to fetch low stock items.';
         console.error('Error fetching low stock items:', err);
       } finally {
         this.isLoadingLowStock = false;
       }
     },
-    
+
     clearError() {
       this.error = null;
-    }
+    },
   },
 });

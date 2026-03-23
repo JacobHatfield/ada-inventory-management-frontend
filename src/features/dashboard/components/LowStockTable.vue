@@ -10,18 +10,27 @@
       </RouterLink>
     </div>
 
-    <div class="p-6 text-center text-slate-500" v-if="loading">
-      Loading low stock items...
-    </div>
-    
-    <div class="p-6 text-center text-slate-500" v-else-if="items.length === 0">
-      <svg class="mx-auto h-12 w-12 text-slate-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <div v-if="loading" class="p-6 text-center text-slate-500">Loading low stock items...</div>
+
+    <div v-else-if="items.length === 0" class="p-6 text-center text-slate-500">
+      <svg
+        class="mx-auto h-12 w-12 text-slate-300"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
       </svg>
       <p class="mt-2 text-sm font-medium">All stock levels are healthy!</p>
     </div>
 
-    <div class="overflow-x-auto" v-else>
+    <div v-else class="overflow-x-auto">
       <table class="w-full text-left text-sm text-slate-600">
         <thead class="bg-slate-50 text-xs text-slate-500 uppercase">
           <tr>
@@ -37,16 +46,27 @@
           <tr v-for="item in displayItems" :key="item.id" class="transition hover:bg-slate-50">
             <td class="px-6 py-4 font-medium text-slate-900">{{ item.name }}</td>
             <td class="px-6 py-4">{{ item.category?.name || 'Uncategorized' }}</td>
-            <td class="px-6 py-4 text-right font-medium" :class="item.quantity === 0 ? 'text-red-600' : 'text-amber-600'">
+            <td
+              class="px-6 py-4 text-right font-medium"
+              :class="item.quantity === 0 ? 'text-red-600' : 'text-amber-600'"
+            >
               {{ item.quantity }}
             </td>
             <td class="px-6 py-4 text-right">{{ item.low_stock_threshold || 0 }}</td>
             <td class="px-6 py-4 text-right">
-              <span v-if="item.quantity === 0" class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Out of Stock</span>
-              <span v-else class="inline-flex items-center rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/10">Low Stock</span>
+              <span
+                v-if="item.quantity === 0"
+                class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10"
+                >Out of Stock</span
+              >
+              <span
+                v-else
+                class="inline-flex items-center rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/10"
+                >Low Stock</span
+              >
             </td>
             <td class="px-6 py-4 text-right">
-               <RouterLink
+              <RouterLink
                 :to="{ name: 'inventory-detail', params: { id: item.id } }"
                 class="font-medium text-blue-600 hover:text-blue-900"
               >

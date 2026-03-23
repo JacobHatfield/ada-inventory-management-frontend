@@ -79,7 +79,7 @@ describe('LowStockTable.vue', () => {
     // We can verify order by checking the rows (quantity 0 should be first)
     const rows = wrapper.findAll('tbody tr');
     expect(rows[0].text()).toContain('Out of Stock Item'); // Quantity 0
-    expect(rows[1].text()).toContain('Test Item 1');       // Quantity 5
+    expect(rows[1].text()).toContain('Test Item 1'); // Quantity 5
   });
 
   it('limits the display based on the limit prop', () => {
