@@ -1,4 +1,4 @@
-import type { SortOrder, PaginationMeta } from './common';
+import type { SortOrder } from './common';
 
 export type StockStatus = 'out_of_stock' | 'low_stock' | 'in_stock';
 
@@ -53,5 +53,8 @@ export interface InventoryListQueryParams {
 
 export interface InventoryListResponse {
   items: InventoryItem[];
-  meta?: PaginationMeta;
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }

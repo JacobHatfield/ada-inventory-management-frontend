@@ -185,6 +185,17 @@
       </table>
     </div>
 
+    <!-- Pagination -->
+    <div v-if="store.paginationMeta && store.paginationMeta.total_pages > 1" class="mt-4">
+      <AppPagination
+        :current-page="store.paginationMeta.page"
+        :total-pages="store.paginationMeta.total_pages"
+        :total-items="store.paginationMeta.total_items"
+        :page-size="store.paginationMeta.page_size"
+        @update:page="onPageChange"
+      />
+    </div>
+
     <!-- Mutation error (e.g. delete failed) -->
     <div
       v-if="store.mutationError"
@@ -202,6 +213,7 @@ import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useInventoryStore } from './inventoryStore';
 import InventoryFilters from './components/InventoryFilters.vue';
+import AppPagination from '@/shared/components/AppPagination.vue';
 import type { StockStatus, InventoryListQueryParams } from '@/shared/types';
 import type { SortOrder } from '@/shared/types/common';
 
@@ -218,6 +230,8 @@ const initialFilters = {
   stock_status: route.query.stock_status as StockStatus | undefined,
   sort_by: route.query.sort_by as 'name' | 'quantity' | 'created_at' | 'updated_at' | undefined,
   sort_order: route.query.sort_order as SortOrder | undefined,
+  page: route.query.page ? Number(route.query.page) : 1,
+  page_size: route.query.page_size ? Number(route.query.page_size) : 10,
 };
 
 onMounted(() => {
@@ -234,6 +248,8 @@ watch(
       stock_status: newQuery.stock_status as StockStatus | undefined,
       sort_by: newQuery.sort_by as 'name' | 'quantity' | 'created_at' | 'updated_at' | undefined,
       sort_order: newQuery.sort_order as SortOrder | undefined,
+      page: newQuery.page ? Number(newQuery.page) : 1,
+      page_size: newQuery.page_size ? Number(newQuery.page_size) : 10,
     });
   },
   { deep: true },
@@ -259,8 +275,16 @@ const onFiltersChanged = (filters: InventoryListQueryParams) => {
   if (filters.sort_order) query.sort_order = filters.sort_order;
   else delete query.sort_order;
 
+  // Since it's a new search/filter/sort, reset page
+  delete query.page;
+
   // Push to router
   // We use push so users can use the back button.
+  router.push({ query });
+};
+
+const onPageChange = (newPage: number) => {
+  const query = { ...route.query, page: String(newPage) };
   router.push({ query });
 };
 
