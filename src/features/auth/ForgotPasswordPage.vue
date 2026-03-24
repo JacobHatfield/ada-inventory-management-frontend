@@ -14,20 +14,26 @@
       <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <!-- Success state -->
         <div v-if="isSubmitted" class="text-center">
-          <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+          <div
+            class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
+          >
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
           <h2 class="text-lg font-semibold text-slate-900">Check your email</h2>
           <p class="mt-2 text-sm text-slate-600">
-            We've sent a password reset link to <span class="font-medium text-slate-900">{{ email }}</span>.
+            We've sent a password reset link to
+            <span class="font-medium text-slate-900">{{ email }}</span
+            >.
           </p>
           <div class="mt-8">
-            <RouterLink
-              to="/login"
-              class="text-sm font-semibold text-slate-900 hover:underline"
-            >
+            <RouterLink to="/login" class="text-sm font-semibold text-slate-900 hover:underline">
               Back to sign in
             </RouterLink>
           </div>

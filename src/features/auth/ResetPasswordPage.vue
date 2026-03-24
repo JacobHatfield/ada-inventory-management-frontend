@@ -14,14 +14,22 @@
       <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <!-- Success state -->
         <div v-if="isReset" class="text-center">
-          <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+          <div
+            class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
+          >
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
           <h2 class="text-lg font-semibold text-slate-900">Password reset</h2>
           <p class="mt-2 text-sm text-slate-600">
-            Your password has been successfully updated. You can now sign in with your new credentials.
+            Your password has been successfully updated. You can now sign in with your new
+            credentials.
           </p>
           <div class="mt-8">
             <RouterLink
@@ -35,9 +43,16 @@
 
         <!-- Token missing error -->
         <div v-else-if="!token" class="text-center">
-          <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600">
+          <div
+            class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600"
+          >
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           </div>
           <h2 class="text-lg font-semibold text-slate-900">Invalid reset link</h2>
@@ -84,7 +99,9 @@
                     : 'border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200',
                 ]"
               />
-              <p v-if="new_passwordError" class="mt-1.5 text-xs text-red-600">{{ new_passwordError }}</p>
+              <p v-if="new_passwordError" class="mt-1.5 text-xs text-red-600">
+                {{ new_passwordError }}
+              </p>
             </div>
 
             <!-- Confirm Password -->
@@ -105,7 +122,9 @@
                     : 'border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200',
                 ]"
               />
-              <p v-if="confirm_passwordError" class="mt-1.5 text-xs text-red-600">{{ confirm_passwordError }}</p>
+              <p v-if="confirm_passwordError" class="mt-1.5 text-xs text-red-600">
+                {{ confirm_passwordError }}
+              </p>
             </div>
 
             <!-- Submit -->
@@ -189,7 +208,8 @@ const schema = toTypedSchema(
 
 const { handleSubmit } = useForm({ validationSchema: schema });
 const { value: new_password, errorMessage: new_passwordError } = useField<string>('new_password');
-const { value: confirm_password, errorMessage: confirm_passwordError } = useField<string>('confirm_password');
+const { value: confirm_password, errorMessage: confirm_passwordError } =
+  useField<string>('confirm_password');
 
 const onSubmit = handleSubmit(async (values) => {
   if (!token.value) return;

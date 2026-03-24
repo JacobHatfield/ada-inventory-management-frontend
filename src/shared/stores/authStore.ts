@@ -143,10 +143,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function resetPassword(payload: {
-    token: string;
-    new_password: string;
-  }): Promise<void> {
+  async function resetPassword(payload: { token: string; new_password: string }): Promise<void> {
     isResettingPassword.value = true;
     resetError.value = null;
 

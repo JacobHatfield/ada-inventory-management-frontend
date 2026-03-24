@@ -245,9 +245,9 @@ describe('authStore', () => {
       vi.mocked(authService.resetPassword).mockRejectedValue(new Error('Token expired'));
 
       const store = useAuthStore();
-      await expect(
-        store.resetPassword({ token: 'expired', new_password: 'new' }),
-      ).rejects.toThrow('Token expired');
+      await expect(store.resetPassword({ token: 'expired', new_password: 'new' })).rejects.toThrow(
+        'Token expired',
+      );
 
       expect(store.resetError).toBe('Token expired');
       expect(store.isResettingPassword).toBe(false);
