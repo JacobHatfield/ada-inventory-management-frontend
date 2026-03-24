@@ -48,4 +48,29 @@ describe('Notification Store', () => {
     expect(store.notifications[2].type).toBe('info');
     expect(store.notifications[3].type).toBe('warning');
   });
+
+  describe('handleEmailError', () => {
+    it('should categorize 503 errors as warnings with longer duration', () => {
+      const store = useNotificationStore();
+      const error = new Error('Request failed with status 503');
+      
+      store.handleEmailError(error);
+      
+      expect(store.notifications).toHaveLength(1);
+      expect(store.notifications[0].type).toBe('warning');
+      expect(store.notifications[0].message).toContain('busy');
+      expect(store.notifications[0].duration).toBe(10000);
+    });
+
+    it('should categorize other errors as basic errors', () => {
+      const store = useNotificationStore();
+      const error = new Error('Unknown connection issue');
+      
+      store.handleEmailError(error);
+      
+      expect(store.notifications).toHaveLength(1);
+      expect(store.notifications[0].type).toBe('error');
+      expect(store.notifications[0].message).toContain('Email action failed');
+    });
+  });
 });
