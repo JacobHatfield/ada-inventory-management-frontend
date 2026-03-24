@@ -12,7 +12,9 @@
           <div class="flex flex-col gap-8 sm:flex-row">
             <!-- Left: Avatar / Image -->
             <div class="flex flex-col items-center gap-4">
-              <div class="relative h-24 w-24 overflow-hidden rounded-full border-4 border-slate-50 bg-slate-100 shadow-inner">
+              <div
+                class="relative h-24 w-24 overflow-hidden rounded-full border-4 border-slate-50 bg-slate-100 shadow-inner"
+              >
                 <img
                   v-if="userProfile?.profile_image_url"
                   :src="userProfile.profile_image_url"
@@ -20,9 +22,14 @@
                   class="h-full w-full object-cover"
                   @error="onImageError"
                 />
-                <div v-else class="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400">
+                <div
+                  v-else
+                  class="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400"
+                >
                   <svg class="h-10 w-10" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path
+                      d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
                   </svg>
                 </div>
               </div>
@@ -67,7 +74,9 @@
                           : 'border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200',
                       ]"
                     />
-                    <p v-if="full_nameError" class="mt-1.5 text-xs text-red-600">{{ full_nameError }}</p>
+                    <p v-if="full_nameError" class="mt-1.5 text-xs text-red-600">
+                      {{ full_nameError }}
+                    </p>
                   </div>
 
                   <!-- Email (Read only in this view or editable if backend supports it) -->
@@ -92,7 +101,10 @@
 
                   <!-- Profile Image URL -->
                   <div class="sm:col-span-2">
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700" for="profile_image_url">
+                    <label
+                      class="mb-1.5 block text-sm font-medium text-slate-700"
+                      for="profile_image_url"
+                    >
                       Profile Image URL
                     </label>
                     <input
@@ -130,8 +142,19 @@
                       fill="none"
                       viewBox="0 0 24 24"
                     >
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
                     </svg>
                     {{ authStore.isUpdatingProfile ? 'Saving Changes...' : 'Save Profile' }}
                   </button>
@@ -144,13 +167,21 @@
 
       <!-- Security / Info Section -->
       <section class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6">
-        <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-2">Account Security</h3>
+        <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-2">
+          Account Security
+        </h3>
         <p class="text-sm text-slate-600">
-          Your account was created on <span class="font-medium text-slate-900">{{ formatDate(userProfile?.created_at) }}</span>.
-          Last updated on <span class="font-medium text-slate-900">{{ formatDate(userProfile?.updated_at) }}</span>.
+          Your account was created on
+          <span class="font-medium text-slate-900">{{ formatDate(userProfile?.created_at) }}</span
+          >. Last updated on
+          <span class="font-medium text-slate-900">{{ formatDate(userProfile?.updated_at) }}</span
+          >.
         </p>
         <div class="mt-4">
-          <RouterLink to="/forgot-password" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+          <RouterLink
+            to="/forgot-password"
+            class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+          >
             Need to change your password?
           </RouterLink>
         </div>
@@ -160,7 +191,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -177,8 +208,13 @@ const schema = toTypedSchema(
   z.object({
     full_name: z.string().min(1, 'Full name is required').max(100),
     email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-    profile_image_url: z.string().url('Please enter a valid image URL').optional().nullable().or(z.literal('')),
-  })
+    profile_image_url: z
+      .string()
+      .url('Please enter a valid image URL')
+      .optional()
+      .nullable()
+      .or(z.literal('')),
+  }),
 );
 
 const { handleSubmit, resetForm } = useForm({
@@ -187,7 +223,9 @@ const { handleSubmit, resetForm } = useForm({
 
 const { value: full_name, errorMessage: full_nameError } = useField<string>('full_name');
 const { value: email, errorMessage: emailError } = useField<string>('email');
-const { value: profile_image_url, errorMessage: profile_image_urlError } = useField<string | null>('profile_image_url');
+const { value: profile_image_url, errorMessage: profile_image_urlError } = useField<string | null>(
+  'profile_image_url',
+);
 
 // Initialize form with store data
 const syncFormWithStore = () => {
@@ -206,7 +244,7 @@ onMounted(async () => {
   try {
     await authStore.fetchProfile();
     syncFormWithStore();
-  } catch (error) {
+  } catch {
     notificationStore.error('Could not load profile information.');
   }
 });
@@ -226,7 +264,7 @@ const onSubmit = handleSubmit(async (values) => {
       profile_image_url: values.profile_image_url || null,
     });
     notificationStore.success('Profile updated successfully!');
-  } catch (error) {
+  } catch {
     notificationStore.error('Failed to update profile. Please try again.');
   }
 });
