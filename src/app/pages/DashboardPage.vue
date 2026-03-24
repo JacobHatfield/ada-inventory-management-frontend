@@ -255,11 +255,7 @@ const triggerAlerts = async () => {
     }
   } catch (error) {
     alertError.value = error instanceof Error ? error.message : 'Failed to trigger alert check';
-    if (isEmailServiceError.value) {
-      notificationStore.error('Email service is busy. Please try again in 5 minutes.');
-    } else {
-      notificationStore.error('Failed to trigger alert check. Please try again.');
-    }
+    notificationStore.handleEmailError(error);
   } finally {
     isTriggering.value = false;
   }

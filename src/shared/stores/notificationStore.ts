@@ -40,6 +40,20 @@ export const useNotificationStore = defineStore('notification', () => {
   const info = (message: string, duration?: number) => notify(message, 'info', duration);
   const warning = (message: string, duration?: number) => notify(message, 'warning', duration);
 
+  const handleEmailError = (err: unknown) => {
+    const message = err instanceof Error ? err.message : String(err);
+    const isBusy = message.includes('503') || message.includes('temporarily unavailable');
+
+    if (isBusy) {
+      return warning(
+        'Email service is currently busy. Your request was received, but please wait 5 minutes before trying again.',
+        10000, // Show for longer to ensure it's read
+      );
+    }
+
+    return error(`Email action failed: ${message}`);
+  };
+
   return {
     notifications,
     notify,
@@ -48,5 +62,6 @@ export const useNotificationStore = defineStore('notification', () => {
     error,
     info,
     warning,
+    handleEmailError,
   };
 });
