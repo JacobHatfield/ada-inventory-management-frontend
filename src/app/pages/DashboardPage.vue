@@ -67,6 +67,32 @@
       </div>
     </div>
 
+    <!-- Alert Check Feedback -->
+    <div
+      v-if="lastCheckResult"
+      class="rounded-xl border border-slate-200 bg-white px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+    >
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-slate-900">Alert check complete</p>
+          <p class="text-xs text-slate-500">Run at {{ formatDate(lastCheckResult.timestamp) }}</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+          {{ lastCheckResult.low_stock_count }} low stock sent
+        </span>
+        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+          {{ lastCheckResult.critical_stock_count }} critical sent
+        </span>
+      </div>
+    </div>
+
     <!-- Cards Row -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <MetricsCard
@@ -182,12 +208,23 @@ import LowStockTable from '@/features/dashboard/components/LowStockTable.vue';
 const dashboardStore = useDashboardStore();
 const notificationStore = useNotificationStore();
 const isTriggering = ref(false);
+const lastCheckResult = ref<{
+  low_stock_count: number;
+  critical_stock_count: number;
+  timestamp: string;
+} | null>(null);
 
 const triggerAlerts = async () => {
   isTriggering.value = true;
   try {
     const result = await alertService.triggerManualAlertCheck();
     if (result.success) {
+      lastCheckResult.value = {
+        low_stock_count: result.low_stock_count,
+        critical_stock_count: result.critical_stock_count,
+        timestamp: new Date().toISOString(),
+      };
+      
       const totalSent = result.low_stock_count + result.critical_stock_count;
       if (totalSent > 0) {
         notificationStore.success(`Successfully sent ${totalSent} low stock alerts!`);
@@ -200,6 +237,13 @@ const triggerAlerts = async () => {
   } finally {
     isTriggering.value = false;
   }
+};
+
+const formatDate = (iso: string): string => {
+  return new Date(iso).toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 };
 
 onMounted(async () => {
