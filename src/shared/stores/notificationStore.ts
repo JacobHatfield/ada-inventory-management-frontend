@@ -16,7 +16,7 @@ export const useNotificationStore = defineStore('notification', () => {
   const notify = (message: string, type: NotificationType = 'info', duration = 5000) => {
     const id = Math.random().toString(36).substring(2, 11);
     const notification: Notification = { id, message, type, duration };
-    
+
     notifications.value.push(notification);
 
     if (duration > 0) {
@@ -24,7 +24,7 @@ export const useNotificationStore = defineStore('notification', () => {
         remove(id);
       }, duration);
     }
-    
+
     return id;
   };
 

@@ -7,9 +7,9 @@
       </div>
       <div class="flex gap-3">
         <button
-          @click="triggerAlerts"
           :disabled="isTriggering"
           class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50"
+          @click="triggerAlerts"
         >
           <svg
             v-if="isTriggering"
@@ -17,11 +17,27 @@
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
           </svg>
           <svg v-else class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
           </svg>
           {{ isTriggering ? 'Checking...' : 'Check alerts' }}
         </button>
@@ -65,8 +81,18 @@
           </h3>
           <div class="mt-2 text-sm text-red-700">
             <p v-if="isEmailServiceError" class="font-semibold text-red-800">
-              <svg class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                class="h-4 w-4 inline mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               The email service is currently overwhelmed.
             </p>
@@ -85,9 +111,16 @@
       class="rounded-xl border border-slate-200 bg-white px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
     >
       <div class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
+        >
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         </div>
         <div>
@@ -96,10 +129,14 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-2">
-        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+        <span
+          class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700"
+        >
           {{ lastCheckResult.low_stock_count }} low stock sent
         </span>
-        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+        <span
+          class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700"
+        >
           {{ lastCheckResult.critical_stock_count }} critical sent
         </span>
       </div>
@@ -245,7 +282,7 @@ const triggerAlerts = async () => {
         critical_stock_count: result.critical_stock_count,
         timestamp: new Date().toISOString(),
       };
-      
+
       const totalSent = result.low_stock_count + result.critical_stock_count;
       if (totalSent > 0) {
         notificationStore.success(`Successfully sent ${totalSent} low stock alerts!`);
