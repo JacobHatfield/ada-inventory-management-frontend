@@ -131,15 +131,25 @@
       <div class="flex flex-wrap gap-2">
         <span
           class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-          :class="lastCheckResult.low_stock_sent ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'"
+          :class="
+            lastCheckResult.low_stock_sent
+              ? 'bg-emerald-100 text-emerald-800'
+              : 'bg-slate-100 text-slate-700'
+          "
         >
-          {{ lastCheckResult.low_stock_count }} {{ lastCheckResult.low_stock_sent ? 'low stock sent' : 'low stock found' }}
+          {{ lastCheckResult.low_stock_count }}
+          {{ lastCheckResult.low_stock_sent ? 'low stock sent' : 'low stock found' }}
         </span>
         <span
           class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-          :class="lastCheckResult.critical_stock_sent ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'"
+          :class="
+            lastCheckResult.critical_stock_sent
+              ? 'bg-emerald-100 text-emerald-800'
+              : 'bg-slate-100 text-slate-700'
+          "
         >
-          {{ lastCheckResult.critical_stock_count }} {{ lastCheckResult.critical_stock_sent ? 'critical sent' : 'critical found' }}
+          {{ lastCheckResult.critical_stock_count }}
+          {{ lastCheckResult.critical_stock_sent ? 'critical sent' : 'critical found' }}
         </span>
       </div>
     </div>
@@ -289,8 +299,7 @@ const triggerAlerts = async () => {
         timestamp: new Date().toISOString(),
       };
 
-      const totalSent =
-        (result.low_stock_sent ? 1 : 0) + (result.critical_stock_sent ? 1 : 0);
+      const totalSent = (result.low_stock_sent ? 1 : 0) + (result.critical_stock_sent ? 1 : 0);
       if (totalSent > 0) {
         notificationStore.success('Low stock alert emails have been dispatched.');
       } else if (result.low_stock_count > 0 || result.critical_stock_count > 0) {

@@ -204,4 +204,53 @@ describe('authStore', () => {
       expect(localStorage.getItem('ada_inventory_access_token')).toBeNull();
     });
   });
+
+  describe('forgotPassword()', () => {
+    it('calls authService.forgotPassword and handles success', async () => {
+      vi.mocked(authService.forgotPassword).mockResolvedValue({ message: 'Email sent' });
+
+      const store = useAuthStore();
+      await store.forgotPassword('test@example.com');
+
+      expect(authService.forgotPassword).toHaveBeenCalledWith({ email: 'test@example.com' });
+      expect(store.isRequestingReset).toBe(false);
+      expect(store.resetError).toBeNull();
+    });
+
+    it('sets resetError and throws when request fails', async () => {
+      vi.mocked(authService.forgotPassword).mockRejectedValue(new Error('Email not found'));
+
+      const store = useAuthStore();
+      await expect(store.forgotPassword('unknown@example.com')).rejects.toThrow('Email not found');
+
+      expect(store.resetError).toBe('Email not found');
+      expect(store.isRequestingReset).toBe(false);
+    });
+  });
+
+  describe('resetPassword()', () => {
+    it('calls authService.resetPassword and handles success', async () => {
+      vi.mocked(authService.resetPassword).mockResolvedValue({ message: 'Password reset' });
+
+      const store = useAuthStore();
+      const payload = { token: 'token123', new_password: 'newpassword123' };
+      await store.resetPassword(payload);
+
+      expect(authService.resetPassword).toHaveBeenCalledWith(payload);
+      expect(store.isResettingPassword).toBe(false);
+      expect(store.resetError).toBeNull();
+    });
+
+    it('sets resetError and throws when reset fails', async () => {
+      vi.mocked(authService.resetPassword).mockRejectedValue(new Error('Token expired'));
+
+      const store = useAuthStore();
+      await expect(store.resetPassword({ token: 'expired', new_password: 'new' })).rejects.toThrow(
+        'Token expired',
+      );
+
+      expect(store.resetError).toBe('Token expired');
+      expect(store.isResettingPassword).toBe(false);
+    });
+  });
 });

@@ -16,10 +16,13 @@ export const useAuthStore = defineStore('auth', () => {
   // Per-action loading flags
   const isLoggingIn = ref(false);
   const isRegistering = ref(false);
+  const isRequestingReset = ref(false);
+  const isResettingPassword = ref(false);
 
   // Per-action error state
   const loginError = ref<string | null>(null);
   const registerError = ref<string | null>(null);
+  const resetError = ref<string | null>(null);
 
   setAuthTokenProvider(() => token.value);
 
@@ -126,6 +129,34 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function forgotPassword(email: string): Promise<void> {
+    isRequestingReset.value = true;
+    resetError.value = null;
+
+    try {
+      await authService.forgotPassword({ email });
+    } catch (error) {
+      resetError.value = error instanceof Error ? error.message : 'Request failed';
+      throw error;
+    } finally {
+      isRequestingReset.value = false;
+    }
+  }
+
+  async function resetPassword(payload: { token: string; new_password: string }): Promise<void> {
+    isResettingPassword.value = true;
+    resetError.value = null;
+
+    try {
+      await authService.resetPassword(payload);
+    } catch (error) {
+      resetError.value = error instanceof Error ? error.message : 'Reset failed';
+      throw error;
+    } finally {
+      isResettingPassword.value = false;
+    }
+  }
+
   function markLoggedOut(): void {
     clearSession();
     initialized.value = true;
@@ -138,14 +169,19 @@ export const useAuthStore = defineStore('auth', () => {
     isBootstrapping,
     isLoggingIn,
     isRegistering,
+    isRequestingReset,
+    isResettingPassword,
     loginError,
     registerError,
+    resetError,
     isAuthenticated,
     setToken,
     clearSession,
     initializeSession,
     login,
     register,
+    forgotPassword,
+    resetPassword,
     markLoggedOut,
   };
 });

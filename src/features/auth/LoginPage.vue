@@ -59,6 +59,14 @@
               ]"
             />
             <p v-if="passwordError" class="mt-1.5 text-xs text-red-600">{{ passwordError }}</p>
+            <div class="mt-2 text-right">
+              <RouterLink
+                to="/forgot-password"
+                class="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline"
+              >
+                Forgot password?
+              </RouterLink>
+            </div>
           </div>
 
           <!-- Submit -->
