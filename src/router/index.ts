@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import DashboardPage from '../app/pages/DashboardPage.vue';
 import LoginPage from '../features/auth/LoginPage.vue';
 import RegisterPage from '../features/auth/RegisterPage.vue';
+import ForgotPasswordPage from '../features/auth/ForgotPasswordPage.vue';
+import ResetPasswordPage from '../features/auth/ResetPasswordPage.vue';
 import InventoryListPage from '../features/inventory/InventoryListPage.vue';
 import CreateItemPage from '../features/inventory/CreateItemPage.vue';
 import ItemDetailPage from '../features/inventory/ItemDetailPage.vue';
@@ -82,6 +84,18 @@ const publicRoutes = [
     path: '/register',
     name: 'register',
     component: RegisterPage,
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: ForgotPasswordPage,
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: ResetPasswordPage,
     meta: { guestOnly: true },
   },
 ];
