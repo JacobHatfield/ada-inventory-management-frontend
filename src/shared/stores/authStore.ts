@@ -3,13 +3,14 @@ import { defineStore } from 'pinia';
 
 import { authService } from '../services/authService';
 import { setAuthTokenProvider } from '../services/apiClient';
-import type { LoginRequest, RegisterRequest, UserProfile } from '../types';
+import type { LoginRequest, RegisterRequest, UserProfile, ProfileUpdate } from '../types';
 
 const TOKEN_STORAGE_KEY = 'ada_inventory_access_token';
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(null);
   const user = ref<UserProfile | null>(null);
+  const userProfile = ref<UserProfile | null>(null);
   const initialized = ref(false);
   const isBootstrapping = ref(false);
 
@@ -18,11 +19,14 @@ export const useAuthStore = defineStore('auth', () => {
   const isRegistering = ref(false);
   const isRequestingReset = ref(false);
   const isResettingPassword = ref(false);
+  const isFetchingProfile = ref(false);
+  const isUpdatingProfile = ref(false);
 
   // Per-action error state
   const loginError = ref<string | null>(null);
   const registerError = ref<string | null>(null);
   const resetError = ref<string | null>(null);
+  const profileError = ref<string | null>(null);
 
   setAuthTokenProvider(() => token.value);
 
@@ -157,6 +161,34 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function fetchProfile(): Promise<void> {
+    isFetchingProfile.value = true;
+    profileError.value = null;
+    try {
+      userProfile.value = await authService.getProfile();
+    } catch (error) {
+      profileError.value = error instanceof Error ? error.message : 'Failed to fetch profile';
+      throw error;
+    } finally {
+      isFetchingProfile.value = false;
+    }
+  }
+
+  async function updateProfile(payload: ProfileUpdate): Promise<void> {
+    isUpdatingProfile.value = true;
+    profileError.value = null;
+    try {
+      const updated = await authService.updateProfile(payload);
+      userProfile.value = updated;
+      user.value = updated;
+    } catch (error) {
+      profileError.value = error instanceof Error ? error.message : 'Update failed';
+      throw error;
+    } finally {
+      isUpdatingProfile.value = false;
+    }
+  }
+
   function markLoggedOut(): void {
     clearSession();
     initialized.value = true;
@@ -171,9 +203,12 @@ export const useAuthStore = defineStore('auth', () => {
     isRegistering,
     isRequestingReset,
     isResettingPassword,
+    isFetchingProfile,
+    isUpdatingProfile,
     loginError,
     registerError,
     resetError,
+    profileError,
     isAuthenticated,
     setToken,
     clearSession,
@@ -182,6 +217,8 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     forgotPassword,
     resetPassword,
+    fetchProfile,
+    updateProfile,
     markLoggedOut,
   };
 });

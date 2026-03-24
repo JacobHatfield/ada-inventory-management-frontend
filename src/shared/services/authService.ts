@@ -6,6 +6,7 @@ import type {
   RegisterRequest,
   TokenResponse,
   UserProfile,
+  ProfileUpdate,
 } from '../types';
 
 export const authService = {
@@ -42,6 +43,17 @@ export const authService = {
       method: 'POST',
       body: payload,
       skipAuth: true,
+    });
+  },
+
+  getProfile(): Promise<UserProfile> {
+    return apiRequest<UserProfile>('/users/me/profile');
+  },
+
+  updateProfile(payload: ProfileUpdate): Promise<UserProfile> {
+    return apiRequest<UserProfile>('/users/me/profile', {
+      method: 'PUT',
+      body: payload,
     });
   },
 };

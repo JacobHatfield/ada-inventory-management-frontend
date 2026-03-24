@@ -2,9 +2,16 @@ export interface UserProfile {
   id: number;
   email: string;
   full_name: string | null;
+  profile_image_url?: string | null;
   is_active: boolean;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface ProfileUpdate {
+  email?: string;
+  full_name?: string;
+  profile_image_url?: string | null;
 }
 
 export interface RegisterRequest {
