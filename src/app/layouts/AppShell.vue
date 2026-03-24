@@ -1,7 +1,6 @@
 <template>
-  <div class="min-h-screen bg-slate-100 text-slate-900">
-    <ErrorBoundary>
-      <header class="border-b border-slate-200 bg-white">
+    <div v-if="authStore.isAuthenticated" class="min-h-screen bg-slate-100 text-slate-900">
+      <header class="border-b border-slate-200 bg-white text-slate-900">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -49,13 +48,18 @@
           </nav>
         </aside>
 
-        <main class="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
+        <main class="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 text-slate-900">
           <RouterView />
         </main>
       </div>
       <GlobalLoading />
-    </ErrorBoundary>
-  </div>
+    </div>
+
+    <!-- Unauthenticated Layout -->
+    <div v-else class="min-h-screen bg-slate-50 text-slate-900">
+      <RouterView />
+      <GlobalLoading />
+    </div>
 </template>
 
 <script setup lang="ts">
