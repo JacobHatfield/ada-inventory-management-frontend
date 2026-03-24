@@ -146,6 +146,18 @@ function normalizeErrorPayload(payload: unknown): {
 
 async function parseErrorResponse(response: Response): Promise<ApiError> {
   const contentType = response.headers.get('content-type') || '';
+  const url = new URL(response.url);
+  const path = url.pathname;
+
+  // Handle 503 Service Unavailable for email service
+  if (response.status === 503) {
+    if (path.includes('/auth/forgot-password') || path.includes('/inventory/alerts/check')) {
+      return new ApiError(
+        'Email service is temporarily unavailable. Please try again in a few minutes.',
+        503,
+      );
+    }
+  }
 
   if (contentType.includes('application/json')) {
     const payload = (await response.json().catch(() => null)) as unknown;
