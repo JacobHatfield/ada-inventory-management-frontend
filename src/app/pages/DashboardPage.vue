@@ -42,7 +42,8 @@
       </div>
     </header>
 
-    <div v-if="dashboardStore.error" class="rounded-md bg-red-50 p-4">
+    <!-- Error Banner -->
+    <div v-if="dashboardStore.error || alertError" class="rounded-md bg-red-50 p-4">
       <div class="flex">
         <div class="flex-shrink-0">
           <svg
@@ -59,10 +60,21 @@
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">Error loading dashboard</h3>
+          <h3 class="text-sm font-medium text-red-800">
+            {{ alertError ? 'Alert check failed' : 'Error loading dashboard' }}
+          </h3>
           <div class="mt-2 text-sm text-red-700">
-            <p>{{ dashboardStore.error }}</p>
+            <p v-if="isEmailServiceError" class="font-semibold text-red-800">
+              <svg class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              The email service is currently overwhelmed.
+            </p>
+            <p>{{ alertError || dashboardStore.error }}</p>
           </div>
+          <p v-if="isEmailServiceError" class="mt-2 text-xs text-red-600">
+            Wait 5 minutes before trying again.
+          </p>
         </div>
       </div>
     </div>
@@ -198,7 +210,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useDashboardStore } from '@/features/dashboard/dashboardStore';
 import { alertService } from '@/shared/services/alertService';
 import { useNotificationStore } from '@/shared/stores/notificationStore';
@@ -208,14 +220,23 @@ import LowStockTable from '@/features/dashboard/components/LowStockTable.vue';
 const dashboardStore = useDashboardStore();
 const notificationStore = useNotificationStore();
 const isTriggering = ref(false);
+const alertError = ref<string | null>(null);
 const lastCheckResult = ref<{
   low_stock_count: number;
   critical_stock_count: number;
   timestamp: string;
 } | null>(null);
 
+const isEmailServiceError = computed(() => {
+  return (
+    alertError.value?.includes('Email service is temporarily unavailable') ||
+    alertError.value?.includes('503')
+  );
+});
+
 const triggerAlerts = async () => {
   isTriggering.value = true;
+  alertError.value = null;
   try {
     const result = await alertService.triggerManualAlertCheck();
     if (result.success) {
@@ -233,7 +254,12 @@ const triggerAlerts = async () => {
       }
     }
   } catch (error) {
-    notificationStore.error('Failed to trigger alert check. Please try again.');
+    alertError.value = error instanceof Error ? error.message : 'Failed to trigger alert check';
+    if (isEmailServiceError.value) {
+      notificationStore.error('Email service is busy. Please try again in 5 minutes.');
+    } else {
+      notificationStore.error('Failed to trigger alert check. Please try again.');
+    }
   } finally {
     isTriggering.value = false;
   }
