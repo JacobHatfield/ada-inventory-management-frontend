@@ -130,14 +130,16 @@
       </div>
       <div class="flex flex-wrap gap-2">
         <span
-          class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700"
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+          :class="lastCheckResult.low_stock_sent ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'"
         >
-          {{ lastCheckResult.low_stock_count }} low stock sent
+          {{ lastCheckResult.low_stock_count }} {{ lastCheckResult.low_stock_sent ? 'low stock sent' : 'low stock found' }}
         </span>
         <span
-          class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700"
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+          :class="lastCheckResult.critical_stock_sent ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'"
         >
-          {{ lastCheckResult.critical_stock_count }} critical sent
+          {{ lastCheckResult.critical_stock_count }} {{ lastCheckResult.critical_stock_sent ? 'critical sent' : 'critical found' }}
         </span>
       </div>
     </div>
@@ -261,6 +263,8 @@ const alertError = ref<string | null>(null);
 const lastCheckResult = ref<{
   low_stock_count: number;
   critical_stock_count: number;
+  low_stock_sent: boolean;
+  critical_stock_sent: boolean;
   timestamp: string;
 } | null>(null);
 
@@ -280,12 +284,19 @@ const triggerAlerts = async () => {
       lastCheckResult.value = {
         low_stock_count: result.low_stock_count,
         critical_stock_count: result.critical_stock_count,
+        low_stock_sent: result.low_stock_sent,
+        critical_stock_sent: result.critical_stock_sent,
         timestamp: new Date().toISOString(),
       };
 
-      const totalSent = result.low_stock_count + result.critical_stock_count;
+      const totalSent =
+        (result.low_stock_sent ? 1 : 0) + (result.critical_stock_sent ? 1 : 0);
       if (totalSent > 0) {
-        notificationStore.success(`Successfully sent ${totalSent} low stock alerts!`);
+        notificationStore.success('Low stock alert emails have been dispatched.');
+      } else if (result.low_stock_count > 0 || result.critical_stock_count > 0) {
+        notificationStore.info(
+          'Low stock detected, but emails were skipped (likely already sent recently).',
+        );
       } else {
         notificationStore.info('All good! No items currently require low stock alerts.');
       }
