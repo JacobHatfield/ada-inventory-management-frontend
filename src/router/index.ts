@@ -12,6 +12,7 @@ import EditItemPage from '../features/inventory/EditItemPage.vue';
 import CategoryListPage from '../features/categories/CategoryListPage.vue';
 import CreateCategoryPage from '../features/categories/CreateCategoryPage.vue';
 import EditCategoryPage from '../features/categories/EditCategoryPage.vue';
+import ProfilePage from '../features/auth/ProfilePage.vue';
 import { useAuthStore } from '../shared/stores/authStore';
 import { useRouteUiStore } from '../shared/stores/routeUiStore'; // Added import for route UI store
 
@@ -69,6 +70,12 @@ const authenticatedRoutes = [
     path: '/categories/:id/edit',
     name: 'category-edit',
     component: EditCategoryPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfilePage,
     meta: { requiresAuth: true },
   },
 ];
