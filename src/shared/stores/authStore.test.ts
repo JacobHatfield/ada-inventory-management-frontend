@@ -14,6 +14,8 @@ vi.mock('../services/authService', () => ({
     getCurrentUser: vi.fn(),
     forgotPassword: vi.fn(),
     resetPassword: vi.fn(),
+    getProfile: vi.fn(),
+    updateProfile: vi.fn(),
   },
 }));
 
@@ -251,6 +253,56 @@ describe('authStore', () => {
 
       expect(store.resetError).toBe('Token expired');
       expect(store.isResettingPassword).toBe(false);
+    });
+  });
+
+  describe('fetchProfile()', () => {
+    it('updates userProfile on success', async () => {
+      const mockProfile = { ...mockUser, profile_image_url: 'https://test.com/img.jpg' };
+      vi.mocked(authService.getProfile).mockResolvedValue(mockProfile);
+
+      const store = useAuthStore();
+      await store.fetchProfile();
+
+      expect(store.userProfile).toEqual(mockProfile);
+      expect(store.isFetchingProfile).toBe(false);
+      expect(store.profileError).toBeNull();
+    });
+
+    it('sets profileError on failure', async () => {
+      vi.mocked(authService.getProfile).mockRejectedValue(new Error('Fetch failed'));
+
+      const store = useAuthStore();
+      await expect(store.fetchProfile()).rejects.toThrow('Fetch failed');
+
+      expect(store.profileError).toBe('Fetch failed');
+      expect(store.isFetchingProfile).toBe(false);
+    });
+  });
+
+  describe('updateProfile()', () => {
+    it('updates userProfile and user on success', async () => {
+      const updatedProfile = { ...mockUser, full_name: 'Updated Name' };
+      vi.mocked(authService.updateProfile).mockResolvedValue(updatedProfile);
+
+      const store = useAuthStore();
+      store.user = mockUser;
+      await store.updateProfile({ full_name: 'Updated Name' });
+
+      expect(store.userProfile).toEqual(updatedProfile);
+      expect(store.user).toEqual(updatedProfile);
+      expect(store.isUpdatingProfile).toBe(false);
+      expect(store.profileError).toBeNull();
+    });
+
+    it('sets profileError on failure', async () => {
+      vi.mocked(authService.updateProfile).mockRejectedValue(new Error('Update failed'));
+
+      const store = useAuthStore();
+      await expect(store.updateProfile({ full_name: 'Fail' })).rejects.toThrow('Update failed');
+
+      expect(store.profileError).toBe('Update failed');
+      expect(store.isUpdatingProfile).toBe(false);
     });
   });
 });
