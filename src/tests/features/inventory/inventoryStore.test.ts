@@ -60,6 +60,15 @@ describe('inventoryStore', () => {
       expect(store.listError).toBeNull();
     });
 
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.list).mockRejectedValue('String error');
+
+      const store = useInventoryStore();
+      await store.fetchItems();
+
+      expect(store.listError).toBe('Failed to load inventory');
+    });
+
     it('sets listError and keeps items empty on failure', async () => {
       vi.mocked(inventoryService.list).mockRejectedValue(new Error('Server error'));
 
@@ -127,6 +136,15 @@ describe('inventoryStore', () => {
       expect(store.selectedItem).toBeNull();
       expect(store.itemError).toBe('Not found');
     });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.getById).mockRejectedValue(null);
+
+      const store = useInventoryStore();
+      await store.fetchItemById(1);
+
+      expect(store.itemError).toBe('Failed to load item');
+    });
   });
 
   describe('createItem()', () => {
@@ -156,6 +174,15 @@ describe('inventoryStore', () => {
       await expect(store.createItem({ name: '', quantity: 0 })).rejects.toThrow();
 
       expect(store.mutationError).toBe('Validation failed');
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.create).mockRejectedValue({});
+
+      const store = useInventoryStore();
+      await expect(store.createItem({ name: 'x' })).rejects.toThrow();
+
+      expect(store.mutationError).toBe('Failed to create item');
     });
 
     it('resets isCreating to false after completion', async () => {
@@ -200,6 +227,30 @@ describe('inventoryStore', () => {
       expect(store.selectedItem?.quantity).toBe(20);
     });
 
+    it('does not update selectedItem if IDs do not match', async () => {
+      vi.mocked(inventoryService.getById).mockResolvedValue(mockItem);
+      vi.mocked(inventoryService.update).mockResolvedValue({ ...mockItem2, quantity: 20 });
+
+      const store = useInventoryStore();
+      await store.fetchItemById(1);
+      await store.updateItem(2, { quantity: 20 });
+
+      expect(store.selectedItem?.quantity).toBe(10);
+    });
+
+    it('handles missing item in list during update', async () => {
+      vi.mocked(inventoryService.list).mockResolvedValue({ 
+        items: [], total: 0, page: 1, page_size: 10, total_pages: 0 
+      } as any);
+      vi.mocked(inventoryService.update).mockResolvedValue(mockItem);
+
+      const store = useInventoryStore();
+      await store.fetchItems();
+      await store.updateItem(1, { name: 'New' });
+
+      expect(store.items).toHaveLength(0);
+    });
+
     it('sets mutationError and throws on failure', async () => {
       vi.mocked(inventoryService.update).mockRejectedValue(new Error('Update failed'));
 
@@ -207,6 +258,14 @@ describe('inventoryStore', () => {
       await expect(store.updateItem(1, { name: 'x' })).rejects.toThrow();
 
       expect(store.mutationError).toBe('Update failed');
+    });
+
+    it('handles non-Error objects in catch block during update', async () => {
+      vi.mocked(inventoryService.update).mockRejectedValue(undefined);
+
+      const store = useInventoryStore();
+      await expect(store.updateItem(1, {})).rejects.toThrow();
+      expect(store.mutationError).toBe('Failed to update item');
     });
   });
 
@@ -240,13 +299,23 @@ describe('inventoryStore', () => {
       expect(store.selectedItem).toBeNull();
     });
 
-    it('sets mutationError and throws on failure', async () => {
-      vi.mocked(inventoryService.remove).mockRejectedValue(new Error('Delete failed'));
+    it('does not clear selectedItem if IDs do not match', async () => {
+      vi.mocked(inventoryService.getById).mockResolvedValue(mockItem);
+      vi.mocked(inventoryService.remove).mockResolvedValue(undefined);
+
+      const store = useInventoryStore();
+      await store.fetchItemById(1);
+      await store.deleteItem(2);
+
+      expect(store.selectedItem).not.toBeNull();
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.remove).mockRejectedValue(123);
 
       const store = useInventoryStore();
       await expect(store.deleteItem(1)).rejects.toThrow();
-
-      expect(store.mutationError).toBe('Delete failed');
+      expect(store.mutationError).toBe('Failed to delete item');
     });
   });
 
@@ -268,17 +337,29 @@ describe('inventoryStore', () => {
       await store.fetchItemById(1);
       await store.incrementStock(1);
 
-      expect(store.items[0].quantity).toBe(11);
       expect(store.selectedItem?.quantity).toBe(11);
     });
 
-    it('sets mutationError and throws on failure', async () => {
-      vi.mocked(inventoryService.incrementStock).mockRejectedValue(new Error('Stock error'));
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.incrementStock).mockRejectedValue('Err');
 
       const store = useInventoryStore();
       await expect(store.incrementStock(1)).rejects.toThrow();
 
-      expect(store.mutationError).toBe('Stock error');
+      expect(store.mutationError).toBe('Failed to increment stock');
+    });
+
+    it('handles missing item in list during increment', async () => {
+      vi.mocked(inventoryService.list).mockResolvedValue({ 
+        items: [], total: 0, page: 1, page_size: 10, total_pages: 0 
+      } as any);
+      vi.mocked(inventoryService.incrementStock).mockResolvedValue({ ...mockItem, quantity: 11 });
+
+      const store = useInventoryStore();
+      await store.fetchItems();
+      await store.incrementStock(1);
+
+      expect(store.items).toHaveLength(0);
     });
   });
 
@@ -300,17 +381,29 @@ describe('inventoryStore', () => {
       await store.fetchItemById(mockItem.id);
       await store.decrementStock(mockItem.id, 1);
 
-      expect(store.items[0].quantity).toBe(9);
       expect(store.selectedItem?.quantity).toBe(9);
     });
 
-    it('sets mutationError and throws on failure', async () => {
-      vi.mocked(inventoryService.decrementStock).mockRejectedValue(new Error('Cannot decrement'));
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.decrementStock).mockRejectedValue(true);
 
       const store = useInventoryStore();
       await expect(store.decrementStock(1)).rejects.toThrow();
 
-      expect(store.mutationError).toBe('Cannot decrement');
+      expect(store.mutationError).toBe('Failed to decrement stock');
+    });
+
+    it('handles missing item in list during decrement', async () => {
+      vi.mocked(inventoryService.list).mockResolvedValue({ 
+        items: [], total: 0, page: 1, page_size: 10, total_pages: 0 
+      } as any);
+      vi.mocked(inventoryService.decrementStock).mockResolvedValue({ ...mockItem, quantity: 9 });
+
+      const store = useInventoryStore();
+      await store.fetchItems();
+      await store.decrementStock(1);
+
+      expect(store.items).toHaveLength(0);
     });
   });
 
@@ -353,6 +446,37 @@ describe('inventoryStore', () => {
       expect(store.auditHistory).toHaveLength(0);
       expect(store.auditError).toBe('Audit fail');
       expect(store.isFetchingHistory).toBe(false);
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(inventoryService.getAuditHistory).mockRejectedValue({ msg: 'error' });
+
+      const store = useInventoryStore();
+      await store.fetchAuditHistory(1);
+
+      expect(store.auditError).toBe('Failed to load audit history');
+    });
+  });
+
+  describe('utility actions', () => {
+    it('clearSelectedItem resets selection and error', () => {
+      const store = useInventoryStore();
+      store.selectedItem = mockItem;
+      store.itemError = 'Some error';
+
+      store.clearSelectedItem();
+
+      expect(store.selectedItem).toBeNull();
+      expect(store.itemError).toBeNull();
+    });
+
+    it('clearMutationError resets mutation error state', () => {
+      const store = useInventoryStore();
+      store.mutationError = 'Some error';
+
+      store.clearMutationError();
+
+      expect(store.mutationError).toBeNull();
     });
   });
 

@@ -94,6 +94,15 @@ describe('authStore', () => {
 
       expect(store.isLoggingIn).toBe(false);
     });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(authService.login).mockRejectedValue(null);
+
+      const store = useAuthStore();
+      await expect(store.login({ email: 'x', password: 'y' })).rejects.toThrow();
+
+      expect(store.loginError).toBe('Login failed');
+    });
   });
 
   describe('register()', () => {
@@ -141,6 +150,28 @@ describe('authStore', () => {
 
       expect(store.isRegistering).toBe(false);
     });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(authService.register).mockRejectedValue(undefined);
+
+      const store = useAuthStore();
+      await expect(store.register({ email: 'x', password: 'y' })).rejects.toThrow();
+
+      expect(store.registerError).toBe('Registration failed');
+    });
+
+    it('sets registerError if auto-login fails after successful registration', async () => {
+      vi.mocked(authService.register).mockResolvedValue(mockUser);
+      vi.mocked(authService.login).mockRejectedValue(new Error('Auto-login failed'));
+
+      const store = useAuthStore();
+      await expect(
+        store.register({ email: 'test@example.com', password: 'password123' }),
+      ).rejects.toThrow('Auto-login failed');
+
+      expect(store.loginError).toBe('Auto-login failed');
+      expect(store.registerError).toBeNull();
+    });
   });
 
   describe('initializeSession()', () => {
@@ -187,6 +218,13 @@ describe('authStore', () => {
 
       expect(authService.getCurrentUser).not.toHaveBeenCalled();
     });
+
+    it('skips initialization if isBootstrapping is true', async () => {
+      const store = useAuthStore();
+      store.isBootstrapping = true;
+      await store.initializeSession();
+      expect(authService.getCurrentUser).not.toHaveBeenCalled();
+    });
   });
 
   describe('markLoggedOut()', () => {
@@ -204,6 +242,24 @@ describe('authStore', () => {
       expect(store.isAuthenticated).toBe(false);
       expect(store.initialized).toBe(true);
       expect(localStorage.getItem('ada_inventory_access_token')).toBeNull();
+    });
+  });
+
+  describe('SSR / No-window safety', () => {
+    it('loadTokenFromStorage returns null if window is undefined', () => {
+      vi.stubGlobal('window', undefined);
+      const store = useAuthStore();
+      store.initializeSession();
+      expect(store.token).toBeNull();
+      vi.unstubAllGlobals();
+    });
+
+    it('persistToken does nothing if window is undefined', () => {
+      vi.stubGlobal('window', undefined);
+      const store = useAuthStore();
+      store.setToken('test');
+      expect(store.token).toBe('test');
+      vi.unstubAllGlobals();
     });
   });
 
@@ -227,6 +283,14 @@ describe('authStore', () => {
 
       expect(store.resetError).toBe('Email not found');
       expect(store.isRequestingReset).toBe(false);
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(authService.forgotPassword).mockRejectedValue({});
+
+      const store = useAuthStore();
+      await expect(store.forgotPassword('x')).rejects.toThrow();
+      expect(store.resetError).toBe('Request failed');
     });
   });
 
@@ -254,6 +318,14 @@ describe('authStore', () => {
       expect(store.resetError).toBe('Token expired');
       expect(store.isResettingPassword).toBe(false);
     });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(authService.resetPassword).mockRejectedValue(123);
+
+      const store = useAuthStore();
+      await expect(store.resetPassword({ token: '', new_password: '' })).rejects.toThrow();
+      expect(store.resetError).toBe('Reset failed');
+    });
   });
 
   describe('fetchProfile()', () => {
@@ -277,6 +349,14 @@ describe('authStore', () => {
 
       expect(store.profileError).toBe('Fetch failed');
       expect(store.isFetchingProfile).toBe(false);
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(authService.getProfile).mockRejectedValue('Err');
+
+      const store = useAuthStore();
+      await expect(store.fetchProfile()).rejects.toThrow();
+      expect(store.profileError).toBe('Failed to fetch profile');
     });
   });
 
@@ -303,6 +383,14 @@ describe('authStore', () => {
 
       expect(store.profileError).toBe('Update failed');
       expect(store.isUpdatingProfile).toBe(false);
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(authService.updateProfile).mockRejectedValue(false);
+
+      const store = useAuthStore();
+      await expect(store.updateProfile({})).rejects.toThrow();
+      expect(store.profileError).toBe('Update failed');
     });
   });
 });

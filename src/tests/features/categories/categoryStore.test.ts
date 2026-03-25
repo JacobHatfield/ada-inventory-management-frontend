@@ -63,6 +63,25 @@ describe('categoryStore', () => {
 
       expect(store.isFetchingList).toBe(false);
     });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(categoryService.list).mockRejectedValue('String error');
+
+      const store = useCategoryStore();
+      await store.fetchCategories();
+
+      expect(store.listError).toBe('Failed to load categories');
+    });
+
+    it('populates categories directly when response is an array', async () => {
+      const mockArray = [mockCategory];
+      vi.mocked(categoryService.list).mockResolvedValue(mockArray as any);
+
+      const store = useCategoryStore();
+      await store.fetchCategories();
+
+      expect(store.categories).toEqual(mockArray);
+    });
   });
 
   describe('fetchCategoryById()', () => {
@@ -84,6 +103,15 @@ describe('categoryStore', () => {
 
       expect(store.selectedCategory).toBeNull();
       expect(store.categoryError).toBe('Not found');
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(categoryService.getById).mockRejectedValue(null);
+
+      const store = useCategoryStore();
+      await store.fetchCategoryById(1);
+
+      expect(store.categoryError).toBe('Failed to load category');
     });
   });
 
@@ -108,6 +136,15 @@ describe('categoryStore', () => {
       await expect(store.createCategory({ name: '' })).rejects.toThrow();
 
       expect(store.mutationError).toBe('Validation failed');
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(categoryService.create).mockRejectedValue({});
+
+      const store = useCategoryStore();
+      await expect(store.createCategory({ name: 'x' })).rejects.toThrow();
+
+      expect(store.mutationError).toBe('Failed to create category');
     });
   });
 
@@ -136,6 +173,36 @@ describe('categoryStore', () => {
 
       expect(store.selectedCategory?.description).toBe('New desc');
     });
+
+    it('does not update selectedCategory if IDs do not match', async () => {
+      vi.mocked(categoryService.getById).mockResolvedValue(mockCategory);
+      vi.mocked(categoryService.update).mockResolvedValue({ ...mockCategory2, name: 'Electro' });
+
+      const store = useCategoryStore();
+      await store.fetchCategoryById(1);
+      await store.updateCategory(2, { name: 'Electro' });
+
+      expect(store.selectedCategory?.name).toBe('Electronics');
+    });
+
+    it('handles missing category in list during update', async () => {
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [] });
+      vi.mocked(categoryService.update).mockResolvedValue(mockCategory);
+
+      const store = useCategoryStore();
+      await store.fetchCategories();
+      await store.updateCategory(1, { name: 'New' });
+
+      expect(store.categories).toHaveLength(0);
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(categoryService.update).mockRejectedValue(undefined);
+
+      const store = useCategoryStore();
+      await expect(store.updateCategory(1, {})).rejects.toThrow();
+      expect(store.mutationError).toBe('Failed to update category');
+    });
   });
 
   describe('deleteCategory()', () => {
@@ -160,6 +227,47 @@ describe('categoryStore', () => {
       await store.deleteCategory(1);
 
       expect(store.selectedCategory).toBeNull();
+    });
+
+    it('does not clear selectedCategory if IDs do not match', async () => {
+      vi.mocked(categoryService.getById).mockResolvedValue(mockCategory);
+      vi.mocked(categoryService.remove).mockResolvedValue(undefined);
+
+      const store = useCategoryStore();
+      await store.fetchCategoryById(1);
+      await store.deleteCategory(2);
+
+      expect(store.selectedCategory).not.toBeNull();
+    });
+
+    it('handles non-Error objects in catch block', async () => {
+      vi.mocked(categoryService.remove).mockRejectedValue(123);
+
+      const store = useCategoryStore();
+      await expect(store.deleteCategory(1)).rejects.toThrow();
+      expect(store.mutationError).toBe('Failed to delete category');
+    });
+  });
+
+  describe('utility actions', () => {
+    it('clearSelectedCategory resets selection and error', () => {
+      const store = useCategoryStore();
+      store.selectedCategory = mockCategory;
+      store.categoryError = 'Some error';
+
+      store.clearSelectedCategory();
+
+      expect(store.selectedCategory).toBeNull();
+      expect(store.categoryError).toBeNull();
+    });
+
+    it('clearMutationError resets mutation error state', () => {
+      const store = useCategoryStore();
+      store.mutationError = 'Some error';
+
+      store.clearMutationError();
+
+      expect(store.mutationError).toBeNull();
     });
   });
 

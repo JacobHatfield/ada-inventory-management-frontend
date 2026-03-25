@@ -46,6 +46,14 @@ describe('dashboardStore', () => {
     expect(store.error).toBe('API Error');
   });
 
+  it('handles fetch summary error with non-Error object', async () => {
+    const store = useDashboardStore();
+    vi.mocked(dashboardService.getStockSummary).mockRejectedValueOnce('String Error');
+
+    await store.fetchSummary();
+    expect(store.error).toBe('Failed to fetch dashboard summary.');
+  });
+
   it('fetches low stock items successfully', async () => {
     const store = useDashboardStore();
     const mockItems = [
@@ -66,6 +74,30 @@ describe('dashboardStore', () => {
     await fetchPromise;
     expect(store.isLoadingLowStock).toBe(false);
     expect(store.lowStockItems).toEqual(mockItems);
+    expect(store.error).toBeNull();
+  });
+
+  it('handles fetch low stock error', async () => {
+    const store = useDashboardStore();
+    vi.mocked(dashboardService.getLowStockItems).mockRejectedValueOnce(new Error('Low Stock Fail'));
+
+    await store.fetchLowStockItems();
+    expect(store.isLoadingLowStock).toBe(false);
+    expect(store.error).toBe('Low Stock Fail');
+  });
+
+  it('handles fetch low stock error with non-Error object', async () => {
+    const store = useDashboardStore();
+    vi.mocked(dashboardService.getLowStockItems).mockRejectedValueOnce(null);
+
+    await store.fetchLowStockItems();
+    expect(store.error).toBe('Failed to fetch low stock items.');
+  });
+
+  it('clearError resets error state', () => {
+    const store = useDashboardStore();
+    store.error = 'Old error';
+    store.clearError();
     expect(store.error).toBeNull();
   });
 });
