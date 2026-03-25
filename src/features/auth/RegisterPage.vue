@@ -190,7 +190,7 @@ const onSubmit = handleSubmit(async (values) => {
       password: values.password,
       full_name: values.full_name || undefined,
     });
-    await router.push({ name: 'dashboard' });
+    await router.push({ name: 'inventory' });
   } catch {
     // registerError is set in the store — displayed in the template above
   }

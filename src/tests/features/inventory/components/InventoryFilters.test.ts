@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import InventoryFilters from './InventoryFilters.vue';
+import InventoryFilters from '@/features/inventory/components/InventoryFilters.vue';
 
 // Mock the category store hook
 vi.mock('@/features/categories/categoryStore', () => ({

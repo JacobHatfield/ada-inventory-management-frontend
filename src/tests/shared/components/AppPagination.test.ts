@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import AppPagination from './AppPagination.vue';
+import AppPagination from '@/shared/components/AppPagination.vue';
 
 describe('AppPagination.vue', () => {
   it('renders pagination info correctly', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import LowStockTable from './LowStockTable.vue';
+import LowStockTable from '@/features/dashboard/components/LowStockTable.vue';
 import type { InventoryItem } from '@/shared/types/inventory';
 
 describe('LowStockTable.vue', () => {

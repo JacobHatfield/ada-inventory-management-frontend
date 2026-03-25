@@ -56,15 +56,18 @@
       </aside>
 
       <main class="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 text-slate-900">
-        <RouterView />
+        <ErrorBoundary>
+          <RouterView />
+        </ErrorBoundary>
       </main>
     </div>
     <GlobalLoading />
   </div>
 
-  <!-- Unauthenticated Layout -->
   <div v-else class="min-h-screen bg-slate-50 text-slate-900">
-    <RouterView />
+    <ErrorBoundary>
+      <RouterView />
+    </ErrorBoundary>
     <GlobalLoading />
   </div>
 </template>
@@ -72,6 +75,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import GlobalLoading from '../../shared/components/GlobalLoading.vue';
+import ErrorBoundary from '../../shared/components/ErrorBoundary.vue';
 import { useAuthStore } from '../../shared/stores/authStore';
 
 const authStore = useAuthStore();

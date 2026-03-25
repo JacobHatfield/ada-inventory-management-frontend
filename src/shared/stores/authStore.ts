@@ -76,25 +76,38 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  let bootstrapPromise: Promise<void> | null = null;
+
   async function initializeSession(): Promise<void> {
-    if (initialized.value || isBootstrapping.value) {
+    if (initialized.value) {
       return;
     }
 
-    isBootstrapping.value = true;
-
-    try {
-      const storedToken = loadTokenFromStorage();
-      if (!storedToken) {
-        initialized.value = true;
-        return;
-      }
-
-      await restoreSessionFromToken(storedToken);
-      initialized.value = true;
-    } finally {
-      isBootstrapping.value = false;
+    if (bootstrapPromise) {
+      return bootstrapPromise;
     }
+
+    bootstrapPromise = (async () => {
+      isBootstrapping.value = true;
+      try {
+        const storedToken = loadTokenFromStorage();
+        if (!storedToken) {
+          initialized.value = true;
+          return;
+        }
+
+        await restoreSessionFromToken(storedToken);
+        initialized.value = true;
+      } catch (error) {
+        console.error('Session initialization failed:', error);
+        initialized.value = true; // Still mark as initialized to avoid infinite loops
+      } finally {
+        isBootstrapping.value = false;
+        bootstrapPromise = null;
+      }
+    })();
+
+    return bootstrapPromise;
   }
 
   async function login(payload: LoginRequest): Promise<void> {

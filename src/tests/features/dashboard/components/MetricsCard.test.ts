@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import MetricsCard from './MetricsCard.vue';
+import MetricsCard from '@/features/dashboard/components/MetricsCard.vue';
 
 describe('MetricsCard.vue', () => {
   it('renders title and value properly', () => {

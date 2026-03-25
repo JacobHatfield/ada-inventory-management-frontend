@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { dashboardService } from './dashboardService';
-import { apiRequest } from '../../shared/services/apiClient';
+import { dashboardService } from '@/features/dashboard/dashboardService';
+import { apiRequest } from '@/shared/services/apiClient';
 
-vi.mock('../../shared/services/apiClient', () => ({
+vi.mock('@/shared/services/apiClient', () => ({
   apiRequest: vi.fn(),
 }));
 

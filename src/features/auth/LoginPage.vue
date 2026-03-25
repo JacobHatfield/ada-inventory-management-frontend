@@ -139,7 +139,7 @@ const { value: password, errorMessage: passwordError } = useField<string>('passw
 const onSubmit = handleSubmit(async (values) => {
   try {
     await authStore.login({ email: values.email, password: values.password });
-    await router.push({ name: 'dashboard' });
+    await router.push({ name: 'inventory' });
   } catch {
     // loginError is set in the store — displayed in the template above
   }

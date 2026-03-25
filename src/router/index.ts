@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, type Router } from 'vue-router';
 
 import DashboardPage from '../app/pages/DashboardPage.vue';
 import LoginPage from '../features/auth/LoginPage.vue';
@@ -107,41 +107,50 @@ const publicRoutes = [
   },
 ];
 
-const routes = [...authenticatedRoutes, ...publicRoutes];
+export const routes = [...authenticatedRoutes, ...publicRoutes];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
-router.beforeEach((to) => {
-  const authStore = useAuthStore();
-  const routeUi = useRouteUiStore();
+export function setupRouterGuards(router: Router) {
+  router.beforeEach(async (to) => {
+    const authStore = useAuthStore();
+    const routeUi = useRouteUiStore();
 
-  routeUi.startNavigation();
+    routeUi.startNavigation();
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return {
-      name: 'login',
-      query: { redirect: to.fullPath },
-    };
-  }
+    // Ensure auth is initialized before checking guards
+    if (!authStore.initialized) {
+      await authStore.initializeSession();
+    }
 
-  if (to.meta.guestOnly && authStore.isAuthenticated) {
-    return { name: 'dashboard' };
-  }
+    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+      return {
+        name: 'login',
+        query: { redirect: to.fullPath },
+      };
+    }
 
-  return true;
-});
+    if (to.meta.guestOnly && authStore.isAuthenticated) {
+      return { name: 'inventory' };
+    }
 
-router.afterEach(() => {
-  const routeUi = useRouteUiStore();
-  routeUi.finishNavigation();
-});
+    return true;
+  });
 
-router.onError((err) => {
-  const routeUi = useRouteUiStore();
-  routeUi.setNavigationError(String(err instanceof Error ? err.message : err));
-});
+  router.afterEach(() => {
+    const routeUi = useRouteUiStore();
+    routeUi.finishNavigation();
+  });
+
+  router.onError((err) => {
+    const routeUi = useRouteUiStore();
+    routeUi.setNavigationError(String(err instanceof Error ? err.message : err));
+  });
+}
+
+setupRouterGuards(router);
 
 export default router;

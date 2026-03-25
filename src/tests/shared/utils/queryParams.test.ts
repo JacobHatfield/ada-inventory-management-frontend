@@ -1,4 +1,4 @@
-import { toQueryString } from './queryParams';
+import { toQueryString } from '@/shared/utils/queryParams';
 
 describe('toQueryString', () => {
   it('returns empty string when no params are provided', () => {
