@@ -216,4 +216,58 @@ describe('apiClient', () => {
       expect(error.message).toContain('Must be positive');
     }
   });
+
+  it('removes interceptors correctly', async () => {
+    const interceptor = vi.fn((config) => config);
+    const remove = addRequestInterceptor(interceptor);
+    
+    remove(); // Remove immediately
+    
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => ({}),
+    });
+
+    await apiRequest('/test');
+    expect(interceptor).not.toHaveBeenCalled();
+  });
+
+  it('handles non-object error payloads', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => 'Internal Server Error', // Not an object
+      url: 'http://api.test/test'
+    });
+
+    await expect(apiRequest('/test')).rejects.toThrow('Request failed');
+  });
+
+  it('handles error payloads with message property instead of detail', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => ({ message: 'Custom error message' }),
+      url: 'http://api.test/test'
+    });
+
+    await expect(apiRequest('/test')).rejects.toThrow('Custom error message');
+  });
+
+  it('respects manual AbortSignal via options', async () => {
+    const controller = new AbortController();
+    
+    // Mock fetch to reject with AbortError when called
+    mockFetch.mockRejectedValueOnce(new DOMException('The operation was aborted', 'AbortError'));
+    
+    const promise = apiRequest('/test', { signal: controller.signal });
+    
+    controller.abort();
+    
+    await expect(promise).rejects.toThrow(/timed out or was aborted/);
+  });
 });

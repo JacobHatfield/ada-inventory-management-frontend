@@ -196,6 +196,7 @@ watch(
       store.fetchAuditHistory(itemId as number, { page: 1, page_size: 10 });
     }
   },
+  { immediate: true },
 );
 
 const close = () => {
