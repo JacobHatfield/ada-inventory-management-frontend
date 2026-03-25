@@ -1,6 +1,6 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { vi } from 'vitest';
-import { useCategoryStore } from './categoryStore';
+import { useCategoryStore } from '@/features/categories/categoryStore';
 import { categoryService } from '@/shared/services/categoryService';
 
 vi.mock('@/shared/services/categoryService', () => ({

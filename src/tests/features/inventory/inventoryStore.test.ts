@@ -1,6 +1,6 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { vi } from 'vitest';
-import { useInventoryStore } from './inventoryStore';
+import { useInventoryStore } from '@/features/inventory/inventoryStore';
 import { inventoryService } from '@/shared/services/inventoryService';
 
 vi.mock('@/shared/services/inventoryService', () => ({

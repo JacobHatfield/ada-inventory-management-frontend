@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useDashboardStore } from './dashboardStore';
-import { dashboardService } from './dashboardService';
+import { useDashboardStore } from '@/features/dashboard/dashboardStore';
+import { dashboardService } from '@/features/dashboard/dashboardService';
 
-vi.mock('./dashboardService', () => ({
+vi.mock('@/features/dashboard/dashboardService', () => ({
   dashboardService: {
     getStockSummary: vi.fn(),
     getLowStockItems: vi.fn(),

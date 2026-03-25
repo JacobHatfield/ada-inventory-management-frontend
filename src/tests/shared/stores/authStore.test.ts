@@ -1,13 +1,13 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { vi } from 'vitest';
-import { useAuthStore } from './authStore';
-import { authService } from '../services/authService';
+import { useAuthStore } from '@/shared/stores/authStore';
+import { authService } from '@/shared/services/authService';
 
-vi.mock('../services/apiClient', () => ({
+vi.mock('@/shared/services/apiClient', () => ({
   setAuthTokenProvider: vi.fn(),
 }));
 
-vi.mock('../services/authService', () => ({
+vi.mock('@/shared/services/authService', () => ({
   authService: {
     login: vi.fn(),
     register: vi.fn(),
