@@ -24,7 +24,7 @@ describe('Inventory Item Flow (Create/Edit)', () => {
         { path: '/inventory/:id/edit', component: EditItemPage },
         { path: '/inventory/:id', name: 'inventory-detail', component: { render: () => null } },
         { path: '/inventory', name: 'inventory', component: { render: () => null } },
-      ]
+      ],
     });
 
     vi.mocked(categoryService.list).mockResolvedValue({
@@ -32,16 +32,16 @@ describe('Inventory Item Flow (Create/Edit)', () => {
       total: 1,
       page: 1,
       page_size: 10,
-      total_pages: 1
+      total_pages: 1,
     } as any);
   });
 
   it('submits CreateItemPage successfully', async () => {
     vi.mocked(inventoryService.create).mockResolvedValue({ id: 99, name: 'New Item' } as any);
-    
+
     await router.push('/inventory/create');
     const wrapper = mount(CreateItemPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await flushPromises();
@@ -50,12 +50,14 @@ describe('Inventory Item Flow (Create/Edit)', () => {
     await wrapper.find('#item-name').setValue('Drill');
     await wrapper.find('#item-quantity').setValue(5);
     await wrapper.find('#item-low-stock-threshold').setValue(2);
-    
+
     await flushPromises();
     await wrapper.find('form').trigger('submit');
-    
+
     await vi.waitFor(() => {
-        expect(inventoryService.create).toHaveBeenCalledWith(expect.objectContaining({ name: 'Drill' }));
+      expect(inventoryService.create).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'Drill' }),
+      );
     });
 
     await flushPromises();
@@ -63,35 +65,38 @@ describe('Inventory Item Flow (Create/Edit)', () => {
   });
 
   it('renders EditItemPage with initial values and submits update', async () => {
-    const item = { 
-      id: 50, 
-      name: 'Wrench', 
-      quantity: 10, 
-      low_stock_threshold: 5, 
+    const item = {
+      id: 50,
+      name: 'Wrench',
+      quantity: 10,
+      low_stock_threshold: 5,
       category_id: 1,
-      description: 'Old desc'
+      description: 'Old desc',
     };
     vi.mocked(inventoryService.getById).mockResolvedValue(item as any);
     vi.mocked(inventoryService.update).mockResolvedValue(item as any);
 
     await router.push('/inventory/50/edit');
     const wrapper = mount(EditItemPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await vi.waitFor(() => {
-        expect(inventoryService.getById).toHaveBeenCalledWith(50);
+      expect(inventoryService.getById).toHaveBeenCalledWith(50);
     });
-    
+
     await flushPromises();
     expect((wrapper.find('#item-name').element as HTMLInputElement).value).toBe('Wrench');
-    
+
     await wrapper.find('#item-name').setValue('Power Wrench');
     await flushPromises();
     await wrapper.find('form').trigger('submit');
-    
+
     await vi.waitFor(() => {
-        expect(inventoryService.update).toHaveBeenCalledWith(50, expect.objectContaining({ name: 'Power Wrench' }));
+      expect(inventoryService.update).toHaveBeenCalledWith(
+        50,
+        expect.objectContaining({ name: 'Power Wrench' }),
+      );
     });
 
     await flushPromises();
@@ -103,11 +108,11 @@ describe('Inventory Item Flow (Create/Edit)', () => {
 
     await router.push('/inventory/404/edit');
     const wrapper = mount(EditItemPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await vi.waitFor(() => {
-        expect(inventoryService.getById).toHaveBeenCalled();
+      expect(inventoryService.getById).toHaveBeenCalled();
     });
     await flushPromises();
     expect(wrapper.text()).toContain('Item not found');

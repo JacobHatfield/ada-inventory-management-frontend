@@ -239,8 +239,12 @@ describe('inventoryStore', () => {
     });
 
     it('handles missing item in list during update', async () => {
-      vi.mocked(inventoryService.list).mockResolvedValue({ 
-        items: [], total: 0, page: 1, page_size: 10, total_pages: 0 
+      vi.mocked(inventoryService.list).mockResolvedValue({
+        items: [],
+        total: 0,
+        page: 1,
+        page_size: 10,
+        total_pages: 0,
       } as any);
       vi.mocked(inventoryService.update).mockResolvedValue(mockItem);
 
@@ -350,8 +354,12 @@ describe('inventoryStore', () => {
     });
 
     it('handles missing item in list during increment', async () => {
-      vi.mocked(inventoryService.list).mockResolvedValue({ 
-        items: [], total: 0, page: 1, page_size: 10, total_pages: 0 
+      vi.mocked(inventoryService.list).mockResolvedValue({
+        items: [],
+        total: 0,
+        page: 1,
+        page_size: 10,
+        total_pages: 0,
       } as any);
       vi.mocked(inventoryService.incrementStock).mockResolvedValue({ ...mockItem, quantity: 11 });
 
@@ -394,8 +402,12 @@ describe('inventoryStore', () => {
     });
 
     it('handles missing item in list during decrement', async () => {
-      vi.mocked(inventoryService.list).mockResolvedValue({ 
-        items: [], total: 0, page: 1, page_size: 10, total_pages: 0 
+      vi.mocked(inventoryService.list).mockResolvedValue({
+        items: [],
+        total: 0,
+        page: 1,
+        page_size: 10,
+        total_pages: 0,
       } as any);
       vi.mocked(inventoryService.decrementStock).mockResolvedValue({ ...mockItem, quantity: 9 });
 

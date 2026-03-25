@@ -11,7 +11,7 @@ describe('LoginFlow', () => {
   beforeEach(async () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    
+
     router = createRouter({
       history: createMemoryHistory(),
       routes: [
@@ -27,23 +27,23 @@ describe('LoginFlow', () => {
     const authStore = useAuthStore();
     const loginSpy = vi.spyOn(authStore, 'login').mockResolvedValue();
     const routerPushSpy = vi.spyOn(router, 'push');
-    
+
     const wrapper = mount(LoginPage, {
       global: {
         plugins: [router],
         stubs: {
           RouterLink: true,
-        }
-      }
+        },
+      },
     });
 
     await wrapper.find('#email').setValue('test@example.com');
     await wrapper.find('#password').setValue('password123');
     await flushPromises();
-    
+
     await wrapper.find('form').trigger('submit');
     await flushPromises();
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     expect(loginSpy).toHaveBeenCalled();
     expect(routerPushSpy).toHaveBeenCalled();
@@ -52,14 +52,14 @@ describe('LoginFlow', () => {
   it('failed login displays error message', async () => {
     const authStore = useAuthStore();
     authStore.loginError = 'Auth failed';
-    
+
     const wrapper = mount(LoginPage, {
       global: {
         plugins: [router],
-        stubs: { RouterLink: true }
-      }
+        stubs: { RouterLink: true },
+      },
     });
-    
+
     expect(wrapper.text()).toContain('Auth failed');
   });
 });

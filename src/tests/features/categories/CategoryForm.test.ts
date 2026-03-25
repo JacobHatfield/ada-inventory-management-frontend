@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import CategoryForm from '@/features/categories/CategoryForm.vue';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('CategoryForm.test.ts', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('CategoryForm.test.ts', () => {
   it('renders with initial values and emits submit', async () => {
     const initialValues = { name: 'Paint', description: 'Wall paint' };
     const wrapper = mount(CategoryForm, {
-      props: { initialValues }
+      props: { initialValues },
     });
 
     expect(wrapper.find('#category-name').element.value).toBe('Paint');

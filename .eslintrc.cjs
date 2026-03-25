@@ -27,4 +27,13 @@ module.exports = {
     'vue/valid-define-props': 'off',
     'vue/valid-define-emits': 'off',
   },
+  overrides: [
+    {
+      files: ['src/tests/**/*.ts', 'src/tests/**/*.vue'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': 'warn',
+      },
+    },
+  ],
 };

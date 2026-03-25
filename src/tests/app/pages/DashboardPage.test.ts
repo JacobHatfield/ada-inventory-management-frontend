@@ -26,7 +26,7 @@ describe('DashboardPage.vue', () => {
         { path: '/inventory', name: 'inventory', component: { render: () => null } },
         { path: '/inventory/create', name: 'inventory-create', component: { render: () => null } },
         { path: '/inventory/:id', name: 'inventory-detail', component: { render: () => null } },
-      ]
+      ],
     });
 
     // Default mock implementation for useDashboardStore
@@ -35,15 +35,13 @@ describe('DashboardPage.vue', () => {
         total_items: 100,
         healthy_stock: 80,
         low_stock: 15,
-        out_of_stock: 5
+        out_of_stock: 5,
       },
-      lowStockItems: [
-        { id: 1, name: 'Item 1', quantity: 2, low_stock_threshold: 5 }
-      ],
+      lowStockItems: [{ id: 1, name: 'Item 1', quantity: 2, low_stock_threshold: 5 }],
       isLoadingLowStock: false,
       error: null,
       fetchSummary: vi.fn().mockResolvedValue(undefined),
-      fetchLowStockItems: vi.fn().mockResolvedValue(undefined)
+      fetchLowStockItems: vi.fn().mockResolvedValue(undefined),
     });
 
     // Default mock for useNotificationStore
@@ -51,14 +49,14 @@ describe('DashboardPage.vue', () => {
       success: vi.fn(),
       info: vi.fn(),
       error: vi.fn(),
-      handleEmailError: vi.fn()
+      handleEmailError: vi.fn(),
     });
   });
 
   it('performs parallel data fetching on mount', async () => {
     const store = useDashboardStore();
     mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     expect(store.fetchSummary).toHaveBeenCalled();
@@ -67,7 +65,7 @@ describe('DashboardPage.vue', () => {
 
   it('renders summary metrics correctly', () => {
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     const text = wrapper.text();
@@ -83,7 +81,7 @@ describe('DashboardPage.vue', () => {
 
   it('executes successful manual alert check', async () => {
     const notificationStore = useNotificationStore();
-    
+
     // Use deferred promise to control timing and capture "Checking..." state
     let resolveAlert: any;
     const alertPromise = new Promise((resolve) => {
@@ -92,7 +90,7 @@ describe('DashboardPage.vue', () => {
     vi.mocked(alertService.triggerManualAlertCheck).mockReturnValue(alertPromise as any);
 
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     const checkButton = wrapper.find('button');
@@ -100,19 +98,21 @@ describe('DashboardPage.vue', () => {
 
     // Should be in triggering state
     expect(checkButton.text()).toContain('Checking...');
-    
+
     // Resolve the promise
     resolveAlert({
       success: true,
       low_stock_count: 2,
       critical_stock_count: 1,
       low_stock_sent: true,
-      critical_stock_sent: true
+      critical_stock_sent: true,
     });
 
     await flushPromises();
 
-    expect(notificationStore.success).toHaveBeenCalledWith('Low stock alert emails have been dispatched.');
+    expect(notificationStore.success).toHaveBeenCalledWith(
+      'Low stock alert emails have been dispatched.',
+    );
     expect(wrapper.text()).toContain('Alert check complete');
     expect(wrapper.text()).toContain('2 low stock sent');
     expect(wrapper.text()).toContain('1 critical sent');
@@ -125,19 +125,19 @@ describe('DashboardPage.vue', () => {
       low_stock_count: 1,
       critical_stock_count: 0,
       low_stock_sent: false,
-      critical_stock_sent: false
+      critical_stock_sent: false,
     });
 
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await wrapper.find('button').trigger('click');
-    
+
     await flushPromises();
-    
+
     expect(notificationStore.info).toHaveBeenCalledWith(
-        expect.stringContaining('emails were skipped')
+      expect.stringContaining('emails were skipped'),
     );
     expect(wrapper.text()).toContain('1 low stock found');
   });
@@ -149,11 +149,11 @@ describe('DashboardPage.vue', () => {
       isLoadingLowStock: false,
       error: 'Failed to load summary',
       fetchSummary: vi.fn(),
-      fetchLowStockItems: vi.fn()
+      fetchLowStockItems: vi.fn(),
     });
 
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     expect(wrapper.text()).toContain('Error loading dashboard');
@@ -166,7 +166,7 @@ describe('DashboardPage.vue', () => {
     vi.mocked(alertService.triggerManualAlertCheck).mockRejectedValue(error);
 
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await wrapper.find('button').trigger('click');
@@ -177,10 +177,12 @@ describe('DashboardPage.vue', () => {
   });
 
   it('shows overwhelmed email service message on 503 error', async () => {
-    vi.mocked(alertService.triggerManualAlertCheck).mockRejectedValue(new Error('503 Service Unavailable'));
+    vi.mocked(alertService.triggerManualAlertCheck).mockRejectedValue(
+      new Error('503 Service Unavailable'),
+    );
 
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await wrapper.find('button').trigger('click');
@@ -192,7 +194,7 @@ describe('DashboardPage.vue', () => {
 
   it('navigates to inventory create page via Add Item button', () => {
     const wrapper = mount(DashboardPage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     const addLink = wrapper.find('a[href="/inventory/create"]');

@@ -19,7 +19,7 @@ vi.mock('@/shared/services/inventoryService', () => ({
     incrementStock: vi.fn(),
     decrementStock: vi.fn(),
     getAuditHistory: vi.fn(),
-  }
+  },
 }));
 
 describe('InventoryPages Integration', () => {
@@ -28,7 +28,7 @@ describe('InventoryPages Integration', () => {
   beforeEach(async () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    
+
     router = createRouter({
       history: createMemoryHistory(),
       routes: [
@@ -37,7 +37,7 @@ describe('InventoryPages Integration', () => {
         { path: '/inventory/:id/edit', name: 'item-edit', component: { render: () => null } },
       ],
     });
-    
+
     await router.push('/inventory');
     await router.isReady();
   });
@@ -49,14 +49,14 @@ describe('InventoryPages Integration', () => {
         total: 0,
         page: 1,
         page_size: 10,
-        total_pages: 0
+        total_pages: 0,
       });
 
       const wrapper = mount(InventoryListPage, {
-        global: { 
-          plugins: [router], 
-          stubs: { InventoryFilters: true, AuditHistoryModal: true, AppPagination: true } 
-        }
+        global: {
+          plugins: [router],
+          stubs: { InventoryFilters: true, AuditHistoryModal: true, AppPagination: true },
+        },
       });
 
       await flushPromises();
@@ -66,27 +66,29 @@ describe('InventoryPages Integration', () => {
 
     it('renders item list when items are present', async () => {
       vi.mocked(inventoryService.list).mockResolvedValue({
-        items: [{ 
-          id: 1, 
-          name: 'Screwdriver', 
-          quantity: 10, 
-          is_low_stock: false, 
-          category: { id: 1, name: 'Tools' },
-          description: 'A tool',
-          low_stock_threshold: 5,
-          category_id: 1
-        }] as any,
+        items: [
+          {
+            id: 1,
+            name: 'Screwdriver',
+            quantity: 10,
+            is_low_stock: false,
+            category: { id: 1, name: 'Tools' },
+            description: 'A tool',
+            low_stock_threshold: 5,
+            category_id: 1,
+          },
+        ] as any,
         total: 1,
         page: 1,
         page_size: 10,
-        total_pages: 1
+        total_pages: 1,
       });
 
       const wrapper = mount(InventoryListPage, {
-        global: { 
-          plugins: [router], 
-          stubs: { InventoryFilters: true, AuditHistoryModal: true, AppPagination: true } 
-        }
+        global: {
+          plugins: [router],
+          stubs: { InventoryFilters: true, AuditHistoryModal: true, AppPagination: true },
+        },
       });
 
       await flushPromises();
@@ -97,31 +99,33 @@ describe('InventoryPages Integration', () => {
 
     it('shows delete confirmation when delete button is clicked', async () => {
       vi.mocked(inventoryService.list).mockResolvedValue({
-        items: [{ 
-          id: 1, 
-          name: 'DeleteMe', 
-          quantity: 5, 
-          is_low_stock: false,
-          description: '',
-          low_stock_threshold: 2,
-          category_id: null
-        }] as any,
+        items: [
+          {
+            id: 1,
+            name: 'DeleteMe',
+            quantity: 5,
+            is_low_stock: false,
+            description: '',
+            low_stock_threshold: 2,
+            category_id: null,
+          },
+        ] as any,
         total: 1,
         page: 1,
         page_size: 10,
-        total_pages: 1
+        total_pages: 1,
       });
-      
+
       const wrapper = mount(InventoryListPage, {
-        global: { 
-          plugins: [router], 
-          stubs: { InventoryFilters: true, AuditHistoryModal: true, AppPagination: true } 
-        }
+        global: {
+          plugins: [router],
+          stubs: { InventoryFilters: true, AuditHistoryModal: true, AppPagination: true },
+        },
       });
 
       await flushPromises();
       await nextTick();
-      
+
       const deleteBtn = wrapper.find('button.text-red-600');
       await deleteBtn.trigger('click');
       expect(wrapper.text()).toContain('Delete?');
@@ -130,24 +134,24 @@ describe('InventoryPages Integration', () => {
 
   describe('ItemDetailPage.vue', () => {
     it('fetches item on mount and renders details', async () => {
-      vi.mocked(inventoryService.getById).mockResolvedValue({ 
-        id: 55, 
-        name: 'Hammer', 
-        quantity: 5, 
-        low_stock_threshold: 10, 
+      vi.mocked(inventoryService.getById).mockResolvedValue({
+        id: 55,
+        name: 'Hammer',
+        quantity: 5,
+        low_stock_threshold: 10,
         is_low_stock: true,
         description: 'A heavy tool',
-        category_id: 1
+        category_id: 1,
       } as any);
 
       await router.push('/inventory/55');
       await router.isReady();
 
       const wrapper = mount(ItemDetailPage, {
-        global: { 
-          plugins: [router], 
-          stubs: { AuditHistoryModal: true } 
-        }
+        global: {
+          plugins: [router],
+          stubs: { AuditHistoryModal: true },
+        },
       });
 
       await flushPromises();

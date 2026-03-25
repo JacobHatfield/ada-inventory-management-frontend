@@ -24,34 +24,46 @@ describe('inventoryService', () => {
   it('create calls correct endpoint', async () => {
     const payload = { name: 'Item', quantity: 10 };
     await inventoryService.create(payload as any);
-    expect(apiRequest).toHaveBeenCalledWith('/inventory/', expect.objectContaining({
-      method: 'POST',
-      body: payload
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/inventory/',
+      expect.objectContaining({
+        method: 'POST',
+        body: payload,
+      }),
+    );
   });
 
   it('update calls correct endpoint', async () => {
     const payload = { quantity: 20 };
     await inventoryService.update(123, payload as any);
-    expect(apiRequest).toHaveBeenCalledWith('/inventory/123', expect.objectContaining({
-      method: 'PUT',
-      body: payload
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/inventory/123',
+      expect.objectContaining({
+        method: 'PUT',
+        body: payload,
+      }),
+    );
   });
 
   it('remove calls correct endpoint', async () => {
     await inventoryService.remove(123);
-    expect(apiRequest).toHaveBeenCalledWith('/inventory/123', expect.objectContaining({
-      method: 'DELETE'
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/inventory/123',
+      expect.objectContaining({
+        method: 'DELETE',
+      }),
+    );
   });
 
   it('incrementStock calls correct endpoint', async () => {
     await inventoryService.incrementStock(123, 5);
-    expect(apiRequest).toHaveBeenCalledWith('/inventory/123/increment', expect.objectContaining({
-      method: 'POST',
-      body: { quantity_change: 5 }
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/inventory/123/increment',
+      expect.objectContaining({
+        method: 'POST',
+        body: { quantity_change: 5 },
+      }),
+    );
   });
 
   it('getAuditHistory calls correct endpoint with query string', async () => {

@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import ItemForm from '@/features/inventory/ItemForm.vue';
 import { useCategoryStore } from '@/features/categories/categoryStore';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('ItemForm.test.ts', () => {
   beforeEach(() => {
@@ -16,11 +16,11 @@ describe('ItemForm.test.ts', () => {
     const initialValues = {
       name: 'Existing Item',
       quantity: 50,
-      description: 'Test description'
+      description: 'Test description',
     };
 
     const wrapper = mount(ItemForm, {
-      props: { initialValues }
+      props: { initialValues },
     });
 
     expect(wrapper.find('#item-name').element.value).toBe('Existing Item');
@@ -43,7 +43,7 @@ describe('ItemForm.test.ts', () => {
     expect(wrapper.emitted().submit[0][0]).toMatchObject({
       name: 'New Gadget',
       quantity: 100,
-      description: 'Splendid gadget'
+      description: 'Splendid gadget',
     });
   });
 
@@ -65,13 +65,13 @@ describe('ItemForm.test.ts', () => {
     const categoryStore = useCategoryStore();
     categoryStore.categories = [
       { id: 1, name: 'Electronics', description: '' },
-      { id: 2, name: 'Furniture', description: '' }
+      { id: 2, name: 'Furniture', description: '' },
     ];
 
     const wrapper = mount(ItemForm);
-    
+
     const options = wrapper.findAll('option');
-    expect(options.some(opt => opt.text() === 'Electronics')).toBe(true);
-    expect(options.some(opt => opt.text() === 'Furniture')).toBe(true);
+    expect(options.some((opt) => opt.text() === 'Electronics')).toBe(true);
+    expect(options.some((opt) => opt.text() === 'Furniture')).toBe(true);
   });
 });

@@ -13,8 +13,11 @@ describe('alertService', () => {
 
   it('triggerManualAlertCheck calls correct endpoint', async () => {
     await alertService.triggerManualAlertCheck();
-    expect(apiRequest).toHaveBeenCalledWith('/inventory/alerts/check', expect.objectContaining({
-      method: 'POST'
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/inventory/alerts/check',
+      expect.objectContaining({
+        method: 'POST',
+      }),
+    );
   });
 });

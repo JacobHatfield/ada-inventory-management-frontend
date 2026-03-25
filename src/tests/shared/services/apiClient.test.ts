@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { 
-  apiRequest, 
-  setAuthTokenProvider, 
-  addRequestInterceptor, 
-  addResponseInterceptor, 
-  addErrorInterceptor
+import {
+  apiRequest,
+  setAuthTokenProvider,
+  addRequestInterceptor,
+  addResponseInterceptor,
+  addErrorInterceptor,
 } from '@/shared/services/apiClient';
 
 vi.mock('@/shared/config/env', () => ({
@@ -36,12 +36,15 @@ describe('apiClient', () => {
 
     const result = await apiRequest('/test');
 
-    expect(mockFetch).toHaveBeenCalledWith('http://api.test/test', expect.objectContaining({
-      method: 'GET',
-      headers: expect.objectContaining({
-        Accept: 'application/json',
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://api.test/test',
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Accept: 'application/json',
+        }),
       }),
-    }));
+    );
     expect(result).toEqual({ data: 'success' });
   });
 
@@ -62,7 +65,7 @@ describe('apiClient', () => {
         headers: expect.objectContaining({
           Authorization: 'Bearer test-token',
         }),
-      })
+      }),
     );
   });
 
@@ -98,7 +101,7 @@ describe('apiClient', () => {
       status: 400,
       headers: new Headers({ 'content-type': 'application/json' }),
       json: async () => ({ detail: 'Invalid request', code: 'VALIDATION_ERROR' }),
-      url: 'http://api.test/test'
+      url: 'http://api.test/test',
     });
 
     try {
@@ -117,16 +120,18 @@ describe('apiClient', () => {
       status: 503,
       headers: new Headers(),
       url: 'http://api.test/auth/forgot-password',
-      text: async () => 'Service Unavailable'
+      text: async () => 'Service Unavailable',
     });
 
-    await expect(apiRequest('/auth/forgot-password')).rejects.toThrow(/Email service is temporarily unavailable/);
+    await expect(apiRequest('/auth/forgot-password')).rejects.toThrow(
+      /Email service is temporarily unavailable/,
+    );
   });
 
   it('runs request interceptors', async () => {
     const interceptor = vi.fn((config) => ({
       ...config,
-      headers: { ...config.headers, 'X-Test': 'intercepted' }
+      headers: { ...config.headers, 'X-Test': 'intercepted' },
     }));
     addRequestInterceptor(interceptor);
 
@@ -146,7 +151,7 @@ describe('apiClient', () => {
         headers: expect.objectContaining({
           'X-Test': 'intercepted',
         }),
-      })
+      }),
     );
   });
 
@@ -175,7 +180,7 @@ describe('apiClient', () => {
       status: 500,
       headers: new Headers(),
       text: async () => 'Error',
-      url: 'http://api.test/test'
+      url: 'http://api.test/test',
     });
 
     await expect(apiRequest('/test')).rejects.toThrow();
@@ -202,10 +207,10 @@ describe('apiClient', () => {
       json: async () => ({
         detail: [
           { msg: 'Field required', loc: ['body', 'name'] },
-          { msg: 'Must be positive', loc: ['body', 'quantity'] }
-        ]
+          { msg: 'Must be positive', loc: ['body', 'quantity'] },
+        ],
       }),
-      url: 'http://api.test/test'
+      url: 'http://api.test/test',
     });
 
     try {
@@ -220,9 +225,9 @@ describe('apiClient', () => {
   it('removes interceptors correctly', async () => {
     const interceptor = vi.fn((config) => config);
     const remove = addRequestInterceptor(interceptor);
-    
+
     remove(); // Remove immediately
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
@@ -240,7 +245,7 @@ describe('apiClient', () => {
       status: 500,
       headers: new Headers({ 'content-type': 'application/json' }),
       json: async () => 'Internal Server Error', // Not an object
-      url: 'http://api.test/test'
+      url: 'http://api.test/test',
     });
 
     await expect(apiRequest('/test')).rejects.toThrow('Request failed');
@@ -252,7 +257,7 @@ describe('apiClient', () => {
       status: 400,
       headers: new Headers({ 'content-type': 'application/json' }),
       json: async () => ({ message: 'Custom error message' }),
-      url: 'http://api.test/test'
+      url: 'http://api.test/test',
     });
 
     await expect(apiRequest('/test')).rejects.toThrow('Custom error message');
@@ -260,14 +265,14 @@ describe('apiClient', () => {
 
   it('respects manual AbortSignal via options', async () => {
     const controller = new AbortController();
-    
+
     // Mock fetch to reject with AbortError when called
     mockFetch.mockRejectedValueOnce(new DOMException('The operation was aborted', 'AbortError'));
-    
+
     const promise = apiRequest('/test', { signal: controller.signal });
-    
+
     controller.abort();
-    
+
     await expect(promise).rejects.toThrow(/timed out or was aborted/);
   });
 });

@@ -11,7 +11,7 @@ vi.mock('@/shared/services/authService', () => ({
   authService: {
     getProfile: vi.fn(),
     updateProfile: vi.fn(),
-  }
+  },
 }));
 
 describe('ProfilePage.test.ts', () => {
@@ -20,14 +20,12 @@ describe('ProfilePage.test.ts', () => {
   beforeEach(async () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    
+
     router = createRouter({
       history: createMemoryHistory(),
-      routes: [
-        { path: '/profile', name: 'profile', component: ProfilePage },
-      ],
+      routes: [{ path: '/profile', name: 'profile', component: ProfilePage }],
     });
-    
+
     await router.push('/profile');
     await router.isReady();
   });
@@ -43,16 +41,16 @@ describe('ProfilePage.test.ts', () => {
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-01T00:00:00Z',
     };
-    
+
     vi.mocked(authService.getProfile).mockResolvedValue(mockProfile);
 
     const wrapper = mount(ProfilePage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await flushPromises();
     // Wait for vee-validate
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect((wrapper.find('#full_name').element as HTMLInputElement).value).toBe('John Doe');
     expect((wrapper.find('#email').element as HTMLInputElement).value).toBe('john@example.com');
@@ -61,18 +59,28 @@ describe('ProfilePage.test.ts', () => {
   it('successful update shows notification', async () => {
     const notificationStore = useNotificationStore();
     const successSpy = vi.spyOn(notificationStore, 'success');
-    
-    vi.mocked(authService.getProfile).mockResolvedValue({ id: 1, full_name: 'John Doe', email: 'john@example.com', is_active: true } as any);
-    vi.mocked(authService.updateProfile).mockResolvedValue({ id: 1, full_name: 'John Doe', email: 'john@example.com', is_active: true } as any);
+
+    vi.mocked(authService.getProfile).mockResolvedValue({
+      id: 1,
+      full_name: 'John Doe',
+      email: 'john@example.com',
+      is_active: true,
+    } as any);
+    vi.mocked(authService.updateProfile).mockResolvedValue({
+      id: 1,
+      full_name: 'John Doe',
+      email: 'john@example.com',
+      is_active: true,
+    } as any);
 
     const wrapper = mount(ProfilePage, {
-      global: { plugins: [router] }
+      global: { plugins: [router] },
     });
 
     await flushPromises();
     await wrapper.find('form').trigger('submit');
     await flushPromises();
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise((resolve) => setTimeout(resolve, 150));
 
     expect(authService.updateProfile).toHaveBeenCalled();
     expect(successSpy).toHaveBeenCalled();

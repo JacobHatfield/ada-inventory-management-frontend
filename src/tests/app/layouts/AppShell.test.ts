@@ -11,7 +11,7 @@ describe('AppShell.vue', () => {
 
   beforeEach(async () => {
     setActivePinia(createPinia());
-    
+
     router = createRouter({
       history: createMemoryHistory(),
       routes: [
@@ -22,7 +22,7 @@ describe('AppShell.vue', () => {
         { path: '/profile', name: 'profile', component: { template: '<div>P</div>' } },
       ],
     });
-    
+
     await router.push('/');
     await router.isReady();
     vi.clearAllMocks();

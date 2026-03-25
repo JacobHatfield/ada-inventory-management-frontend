@@ -17,7 +17,7 @@ vi.mock('@/shared/services/categoryService', () => ({
     create: vi.fn(),
     update: vi.fn(),
     remove: vi.fn(),
-  }
+  },
 }));
 
 describe('CategoryPages Integration', () => {
@@ -26,7 +26,7 @@ describe('CategoryPages Integration', () => {
   beforeEach(async () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    
+
     router = createRouter({
       history: createMemoryHistory(),
       routes: [
@@ -35,7 +35,7 @@ describe('CategoryPages Integration', () => {
         { path: '/categories/:id/edit', name: 'category-edit', component: EditCategoryPage },
       ],
     });
-    
+
     await router.push('/categories');
     await router.isReady();
   });
@@ -44,20 +44,20 @@ describe('CategoryPages Integration', () => {
     it('renders category list and handle deletion', async () => {
       const store = useCategoryStore();
       const mockCat = { id: 1, name: 'Tools', description: 'Hand and power tools' };
-      
+
       vi.mocked(categoryService.list).mockResolvedValue([mockCat]);
       vi.mocked(categoryService.remove).mockResolvedValue();
 
       const wrapper = mount(CategoryListPage, {
-        global: { plugins: [router] }
+        global: { plugins: [router] },
       });
 
       await flushPromises();
       expect(wrapper.text()).toContain('Tools');
-      
+
       await wrapper.find('button.text-red-600').trigger('click');
       expect(wrapper.text()).toContain('Delete?');
-      
+
       await wrapper.find('button.bg-red-600').trigger('click');
       expect(categoryService.remove).toHaveBeenCalledWith(1);
     });
@@ -69,10 +69,15 @@ describe('CategoryPages Integration', () => {
       const routerPushSpy = vi.spyOn(router, 'push');
 
       const wrapper = mount(CreateCategoryPage, {
-        global: { 
-          plugins: [router], 
-          stubs: { CategoryForm: { template: '<div @click="$emit(\'submit\', { name: \'New Cat\' })" class="mock-submit"></div>' } } 
-        }
+        global: {
+          plugins: [router],
+          stubs: {
+            CategoryForm: {
+              template:
+                '<div @click="$emit(\'submit\', { name: \'New Cat\' })" class="mock-submit"></div>',
+            },
+          },
+        },
       });
 
       await wrapper.find('.mock-submit').trigger('click');
@@ -85,7 +90,11 @@ describe('CategoryPages Integration', () => {
 
   describe('EditCategoryPage.vue', () => {
     it('fetches category on mount and redirects on update', async () => {
-      vi.mocked(categoryService.getById).mockResolvedValue({ id: 10, name: 'Old Name', description: '' });
+      vi.mocked(categoryService.getById).mockResolvedValue({
+        id: 10,
+        name: 'Old Name',
+        description: '',
+      });
       vi.mocked(categoryService.update).mockResolvedValue({ id: 10, name: 'Updated Name' } as any);
       const routerPushSpy = vi.spyOn(router, 'push');
 
@@ -93,10 +102,15 @@ describe('CategoryPages Integration', () => {
       await router.isReady();
 
       const wrapper = mount(EditCategoryPage, {
-        global: { 
-          plugins: [router], 
-          stubs: { CategoryForm: { template: '<div @click="$emit(\'submit\', { name: \'Updated Name\' })" class="mock-submit"></div>' } } 
-        }
+        global: {
+          plugins: [router],
+          stubs: {
+            CategoryForm: {
+              template:
+                '<div @click="$emit(\'submit\', { name: \'Updated Name\' })" class="mock-submit"></div>',
+            },
+          },
+        },
       });
 
       await flushPromises();

@@ -1,0 +1,80 @@
+
+> ada-inventory-management-frontend@0.0.0 lint
+> eslint --ext .js,.ts,.vue src --ignore-path .eslintignore
+
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\app\layouts\AppShell.test.ts
+  7:10  error  'useRouteUiStore' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\app\pages\DashboardPage.test.ts
+   16:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   33:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   90:85  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\features\auth\ProfilePage.test.ts
+  34:11  error  'authStore' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  68:10  error  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  74:10  error  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\features\categories\CategoryPages.test.ts
+   5:10  error  'nextTick' is defined but never used        @typescript-eslint/no-unused-vars
+  45:13  error  'store' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  68:90  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  98:95  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\features\inventory\InventoryItemFlow.test.ts
+  36:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  40:90  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  76:67  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\features\inventory\InventoryPages.test.ts
+    9:10  error  'useInventoryStore' is defined but never used  @typescript-eslint/no-unused-vars
+   80:14  error  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  112:14  error  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  145:12  error  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\features\inventory\components\AuditHistoryModal.test.ts
+  43:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  70:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\features\inventory\inventoryStore.test.ts
+  248:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  363:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  411:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\components\AppNotification.test.ts
+   8:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:11  error  'id' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\components\ErrorBoundary.test.ts
+  7:11  warning  Prop "shouldCrash" should define at least its type  vue/require-prop-types
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\components\GlobalLoading.test.ts
+  2:17  error  'flushPromises' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\services\apiClient.test.ts
+  110:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  197:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\services\auditService.test.ts
+  15:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\services\categoryService.test.ts
+  26:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  38:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\services\inventoryService.test.ts
+  26:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  38:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jacob\OneDrive\Documents\GitHub\ada-inventory-management-frontend\src\tests\shared\stores\categoryStore.test.ts
+  78:70  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 41 problems (40 errors, 1 warning)
+

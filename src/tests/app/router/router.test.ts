@@ -10,7 +10,7 @@ describe('App Router Guards', () => {
   beforeEach(async () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    
+
     // Create a real router but with memory history
     router = createRouter({
       history: createMemoryHistory(),
@@ -62,10 +62,10 @@ describe('App Router Guards', () => {
   it('waits for session initialization before redirecting guestOnly routes', async () => {
     const authStore = useAuthStore();
     authStore.initialized = false;
-    
+
     // Mock initializeSession to take some time and then set authenticated state
     vi.spyOn(authStore, 'initializeSession').mockImplementation(async () => {
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
       authStore.token = 'fake-token';
       authStore.user = { id: 1, email: 't@t.com', full_name: 'U', is_active: true };
       authStore.initialized = true;
@@ -73,7 +73,7 @@ describe('App Router Guards', () => {
 
     // Start navigation to a guestOnly route
     await router.push('/login');
-    
+
     expect(router.currentRoute.value.path).toBe('/inventory');
   });
 });

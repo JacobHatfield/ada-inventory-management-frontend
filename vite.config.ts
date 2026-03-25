@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => {
         provider: 'v8',
         include: ['src/**/*.{ts,vue}'],
         exclude: ['src/main.ts', 'src/**/*.d.ts'],
+        thresholds: {
+          statements: 80,
+        },
       },
     },
   };

@@ -17,10 +17,10 @@ describe('GlobalLoading.vue', () => {
   it('is visible when navigating', async () => {
     const routeUi = useRouteUiStore();
     const wrapper = mount(GlobalLoading);
-    
+
     routeUi.startNavigation();
     await wrapper.vm.$nextTick();
-    
+
     expect(wrapper.find('.fixed').exists()).toBe(true);
     expect(wrapper.find('.animate-loading').exists()).toBe(true);
   });
@@ -28,7 +28,7 @@ describe('GlobalLoading.vue', () => {
   it('hides again when navigation finishes', async () => {
     const routeUi = useRouteUiStore();
     const wrapper = mount(GlobalLoading);
-    
+
     routeUi.startNavigation();
     await wrapper.vm.$nextTick();
     expect(wrapper.find('.fixed').exists()).toBe(true);

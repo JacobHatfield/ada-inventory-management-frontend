@@ -14,21 +14,27 @@ describe('authService', () => {
   it('register calls correct endpoint', async () => {
     const payload = { email: 'test@test.com', password: 'password123' };
     await authService.register(payload);
-    expect(apiRequest).toHaveBeenCalledWith('/auth/register', expect.objectContaining({
-      method: 'POST',
-      body: payload,
-      skipAuth: true
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/auth/register',
+      expect.objectContaining({
+        method: 'POST',
+        body: payload,
+        skipAuth: true,
+      }),
+    );
   });
 
   it('login calls correct endpoint', async () => {
     const payload = { email: 'test@test.com', password: 'password123' };
     await authService.login(payload);
-    expect(apiRequest).toHaveBeenCalledWith('/auth/login', expect.objectContaining({
-      method: 'POST',
-      body: payload,
-      skipAuth: true
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/auth/login',
+      expect.objectContaining({
+        method: 'POST',
+        body: payload,
+        skipAuth: true,
+      }),
+    );
   });
 
   it('getCurrentUser calls correct endpoint', async () => {
@@ -39,21 +45,27 @@ describe('authService', () => {
   it('forgotPassword calls correct endpoint', async () => {
     const payload = { email: 'test@test.com' };
     await authService.forgotPassword(payload);
-    expect(apiRequest).toHaveBeenCalledWith('/auth/forgot-password', expect.objectContaining({
-      method: 'POST',
-      body: payload,
-      skipAuth: true
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/auth/forgot-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: payload,
+        skipAuth: true,
+      }),
+    );
   });
 
   it('resetPassword calls correct endpoint', async () => {
     const payload = { token: 'token123', new_password: 'newpassword' };
     await authService.resetPassword(payload);
-    expect(apiRequest).toHaveBeenCalledWith('/auth/reset-password', expect.objectContaining({
-      method: 'POST',
-      body: payload,
-      skipAuth: true
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/auth/reset-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: payload,
+        skipAuth: true,
+      }),
+    );
   });
 
   it('getProfile calls correct endpoint', async () => {
@@ -64,9 +76,12 @@ describe('authService', () => {
   it('updateProfile calls correct endpoint', async () => {
     const payload = { full_name: 'New Name' };
     await authService.updateProfile(payload);
-    expect(apiRequest).toHaveBeenCalledWith('/users/me/profile', expect.objectContaining({
-      method: 'PUT',
-      body: payload
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/users/me/profile',
+      expect.objectContaining({
+        method: 'PUT',
+        body: payload,
+      }),
+    );
   });
 });

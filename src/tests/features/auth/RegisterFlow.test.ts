@@ -5,7 +5,7 @@ import { createRouter, createMemoryHistory, type Router } from 'vue-router';
 import RegisterPage from '@/features/auth/RegisterPage.vue';
 import { useAuthStore } from '@/shared/stores/authStore';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('RegisterFlow.test.ts', () => {
   let router: Router;
@@ -13,7 +13,7 @@ describe('RegisterFlow.test.ts', () => {
   beforeEach(async () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    
+
     router = createRouter({
       history: createMemoryHistory(),
       routes: [
@@ -26,15 +26,15 @@ describe('RegisterFlow.test.ts', () => {
   });
 
   it('shows validation error if passwords do not match', async () => {
-    const wrapper = mount(RegisterPage, { 
+    const wrapper = mount(RegisterPage, {
       shallow: true,
-      global: { plugins: [router] } 
+      global: { plugins: [router] },
     });
 
     await wrapper.find('input#email').setValue('reg@example.com');
     await wrapper.find('input#password').setValue('password123');
     await wrapper.find('input#confirm_password').setValue('mismatch');
-    
+
     await wrapper.find('form').trigger('submit');
     await flushPromises();
     await delay(100);
@@ -45,16 +45,16 @@ describe('RegisterFlow.test.ts', () => {
   it('successful registration calls authStore.register', async () => {
     const authStore = useAuthStore();
     const registerSpy = vi.spyOn(authStore, 'register').mockResolvedValue();
-    const wrapper = mount(RegisterPage, { 
+    const wrapper = mount(RegisterPage, {
       shallow: true,
-      global: { plugins: [router] } 
+      global: { plugins: [router] },
     });
 
     await wrapper.find('input#email').setValue('reg@test.com');
     await wrapper.find('input#password').setValue('password123');
     await wrapper.find('input#confirm_password').setValue('password123');
     await flushPromises();
-    
+
     await wrapper.find('form').trigger('submit');
     await flushPromises();
     await delay(100);

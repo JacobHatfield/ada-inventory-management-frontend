@@ -24,25 +24,34 @@ describe('categoryService', () => {
   it('create calls correct endpoint', async () => {
     const payload = { name: 'New Cat' };
     await categoryService.create(payload as any);
-    expect(apiRequest).toHaveBeenCalledWith('/categories/', expect.objectContaining({
-      method: 'POST',
-      body: payload
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/categories/',
+      expect.objectContaining({
+        method: 'POST',
+        body: payload,
+      }),
+    );
   });
 
   it('update calls correct endpoint', async () => {
     const payload = { name: 'Updated' };
     await categoryService.update(1, payload as any);
-    expect(apiRequest).toHaveBeenCalledWith('/categories/1', expect.objectContaining({
-      method: 'PUT',
-      body: payload
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/categories/1',
+      expect.objectContaining({
+        method: 'PUT',
+        body: payload,
+      }),
+    );
   });
 
   it('remove calls correct endpoint', async () => {
     await categoryService.remove(1);
-    expect(apiRequest).toHaveBeenCalledWith('/categories/1', expect.objectContaining({
-      method: 'DELETE'
-    }));
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/categories/1',
+      expect.objectContaining({
+        method: 'DELETE',
+      }),
+    );
   });
 });
