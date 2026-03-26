@@ -7,6 +7,7 @@ Enterprise-grade inventory management system following a three-layer architectur
 The Ada Inventory Management System provides a robust platform for managing stock, tracking audit histories, and receiving automated alerts. It is designed for scalability and maintains high standards for security and testability.
 
 ### Key Features
+
 - User Management: Registration, JWT-based login, password reset workflow, and profile management.
 - Inventory Control: Full CRUD operations for items, stock level adjustments, and low-stock threshold monitoring.
 - Categorisation: Manage item categories and filter inventory for better organisation.
@@ -25,6 +26,7 @@ The system strictly follows a Three-Layer Architecture:
 3. Database: PostgreSQL (Persistent storage via SQLAlchemy ORM).
 
 ### Technical Decisions
+
 - Pinia for State Management: Used for global stores (auth, inventory, category, notification) to ensure reactive data flow.
 - Modular Feature Design: Code is organised by feature areas (auth, inventory, dashboard) to improve maintainability.
 - Centralised API Client: A shared apiClient handles JWT injection, request/response interceptors, and consistent error handling across the app.
@@ -35,11 +37,13 @@ The system strictly follows a Three-Layer Architecture:
 ## Requirements
 
 ### Prerequisites
+
 - Node.js: v18 or later
 - npm: v9 or later
 - Backend: A running instance of the Ada Inventory Management Backend
 
 ### Environment Variables
+
 Create a .env.local file in the root directory:
 
 ```env
@@ -59,17 +63,21 @@ VITE_API_PREFIX=/api/v1
 ## Setup & Usage
 
 ### 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Development Server
+
 ```bash
 npm run dev
 ```
+
 The app will be available at http://localhost:5173.
 
 ### 3. Build for Production
+
 ```bash
 npm run build
 ```
@@ -89,6 +97,7 @@ npm run build
 Quality is enforced through rigorous testing and automated pipelines.
 
 ### Running Tests
+
 ```bash
 # Run all vitest unit/component tests
 npm run test
@@ -98,7 +107,9 @@ npm run test:coverage
 ```
 
 ### CI/CD Pipeline
+
 Integrated via GitHub Actions (.github/workflows/pipeline.yml):
+
 - Linting & Formatting: Automated checks on every PR to maintain clean code.
 - Automated Tests: Every push must pass the full test suite.
 - Coverage Gate: The pipeline will fail if statement coverage drops below 80%.
@@ -114,4 +125,5 @@ Integrated via GitHub Actions (.github/workflows/pipeline.yml):
 ---
 
 ## Generative AI Usage
-I have used Generative AI within my work to help with planning, debugging and documentation drafting in my work. Any use for this was critically checked and manually amended by myself. 
+
+I have used Generative AI within my work to help with planning, debugging and documentation drafting in my work. Any use for this was critically checked and manually amended by myself.
