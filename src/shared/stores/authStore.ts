@@ -3,16 +3,30 @@ import { defineStore } from 'pinia';
 
 import { authService } from '../services/authService';
 import { setAuthTokenProvider } from '../services/apiClient';
-import type { UserProfile } from '../types';
+import type { LoginRequest, RegisterRequest, UserProfile, ProfileUpdate } from '../types';
 
 const TOKEN_STORAGE_KEY = 'ada_inventory_access_token';
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(null);
   const user = ref<UserProfile | null>(null);
+  const userProfile = ref<UserProfile | null>(null);
   const initialized = ref(false);
   const isBootstrapping = ref(false);
-  const authError = ref<string | null>(null);
+
+  // Per-action loading flags
+  const isLoggingIn = ref(false);
+  const isRegistering = ref(false);
+  const isRequestingReset = ref(false);
+  const isResettingPassword = ref(false);
+  const isFetchingProfile = ref(false);
+  const isUpdatingProfile = ref(false);
+
+  // Per-action error state
+  const loginError = ref<string | null>(null);
+  const registerError = ref<string | null>(null);
+  const resetError = ref<string | null>(null);
+  const profileError = ref<string | null>(null);
 
   setAuthTokenProvider(() => token.value);
 
@@ -47,7 +61,8 @@ export const useAuthStore = defineStore('auth', () => {
   function clearSession(): void {
     token.value = null;
     user.value = null;
-    authError.value = null;
+    loginError.value = null;
+    registerError.value = null;
     persistToken(null);
   }
 
@@ -56,31 +71,134 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       user.value = await authService.getCurrentUser();
-      authError.value = null;
-    } catch (error) {
+    } catch {
       clearSession();
-      authError.value = error instanceof Error ? error.message : 'Session restore failed';
     }
   }
 
+  let bootstrapPromise: Promise<void> | null = null;
+
   async function initializeSession(): Promise<void> {
-    if (initialized.value || isBootstrapping.value) {
+    if (initialized.value) {
       return;
     }
 
-    isBootstrapping.value = true;
+    if (bootstrapPromise) {
+      return bootstrapPromise;
+    }
+
+    bootstrapPromise = (async () => {
+      isBootstrapping.value = true;
+      try {
+        const storedToken = loadTokenFromStorage();
+        if (!storedToken) {
+          initialized.value = true;
+          return;
+        }
+
+        await restoreSessionFromToken(storedToken);
+        initialized.value = true;
+      } catch (error) {
+        console.error('Session initialization failed:', error);
+        initialized.value = true; // Still mark as initialized to avoid infinite loops
+      } finally {
+        isBootstrapping.value = false;
+        bootstrapPromise = null;
+      }
+    })();
+
+    return bootstrapPromise;
+  }
+
+  async function login(payload: LoginRequest): Promise<void> {
+    isLoggingIn.value = true;
+    loginError.value = null;
 
     try {
-      const storedToken = loadTokenFromStorage();
-      if (!storedToken) {
-        initialized.value = true;
-        return;
-      }
-
-      await restoreSessionFromToken(storedToken);
+      const tokenResponse = await authService.login(payload);
+      setToken(tokenResponse.access_token);
+      user.value = await authService.getCurrentUser();
       initialized.value = true;
+    } catch (error) {
+      loginError.value = error instanceof Error ? error.message : 'Login failed';
+      throw error;
     } finally {
-      isBootstrapping.value = false;
+      isLoggingIn.value = false;
+    }
+  }
+
+  async function register(payload: RegisterRequest): Promise<void> {
+    isRegistering.value = true;
+    registerError.value = null;
+
+    try {
+      await authService.register(payload);
+      // Auto-login after successful registration
+      await login({ email: payload.email, password: payload.password });
+    } catch (error) {
+      // Only set registerError if the failure was in registration, not the auto-login
+      if (!loginError.value) {
+        registerError.value = error instanceof Error ? error.message : 'Registration failed';
+      }
+      throw error;
+    } finally {
+      isRegistering.value = false;
+    }
+  }
+
+  async function forgotPassword(email: string): Promise<void> {
+    isRequestingReset.value = true;
+    resetError.value = null;
+
+    try {
+      await authService.forgotPassword({ email });
+    } catch (error) {
+      resetError.value = error instanceof Error ? error.message : 'Request failed';
+      throw error;
+    } finally {
+      isRequestingReset.value = false;
+    }
+  }
+
+  async function resetPassword(payload: { token: string; new_password: string }): Promise<void> {
+    isResettingPassword.value = true;
+    resetError.value = null;
+
+    try {
+      await authService.resetPassword(payload);
+    } catch (error) {
+      resetError.value = error instanceof Error ? error.message : 'Reset failed';
+      throw error;
+    } finally {
+      isResettingPassword.value = false;
+    }
+  }
+
+  async function fetchProfile(): Promise<void> {
+    isFetchingProfile.value = true;
+    profileError.value = null;
+    try {
+      userProfile.value = await authService.getProfile();
+    } catch (error) {
+      profileError.value = error instanceof Error ? error.message : 'Failed to fetch profile';
+      throw error;
+    } finally {
+      isFetchingProfile.value = false;
+    }
+  }
+
+  async function updateProfile(payload: ProfileUpdate): Promise<void> {
+    isUpdatingProfile.value = true;
+    profileError.value = null;
+    try {
+      const updated = await authService.updateProfile(payload);
+      userProfile.value = updated;
+      user.value = updated;
+    } catch (error) {
+      profileError.value = error instanceof Error ? error.message : 'Update failed';
+      throw error;
+    } finally {
+      isUpdatingProfile.value = false;
     }
   }
 
@@ -92,13 +210,29 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     token,
     user,
+    userProfile,
     initialized,
     isBootstrapping,
-    authError,
+    isLoggingIn,
+    isRegistering,
+    isRequestingReset,
+    isResettingPassword,
+    isFetchingProfile,
+    isUpdatingProfile,
+    loginError,
+    registerError,
+    resetError,
+    profileError,
     isAuthenticated,
     setToken,
     clearSession,
     initializeSession,
+    login,
+    register,
+    forgotPassword,
+    resetPassword,
+    fetchProfile,
+    updateProfile,
     markLoggedOut,
   };
 });

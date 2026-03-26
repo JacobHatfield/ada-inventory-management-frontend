@@ -25,11 +25,15 @@ export default defineConfig(({ mode }) => {
     test: {
       globals: true,
       environment: 'jsdom',
+      testTimeout: 60000,
       include: ['src/**/*.{test,spec}.{ts,tsx}'],
       coverage: {
         provider: 'v8',
         include: ['src/**/*.{ts,vue}'],
         exclude: ['src/main.ts', 'src/**/*.d.ts'],
+        thresholds: {
+          statements: 80,
+        },
       },
     },
   };

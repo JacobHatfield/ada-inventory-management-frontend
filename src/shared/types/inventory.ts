@@ -1,6 +1,6 @@
-import type { SortOrder, PaginationMeta } from './common';
+import type { SortOrder } from './common';
 
-export type StockLevel = 'low' | 'medium' | 'high';
+export type StockStatus = 'out_of_stock' | 'low_stock' | 'in_stock';
 
 export interface InventoryCategorySummary {
   id: number;
@@ -46,12 +46,15 @@ export interface InventoryListQueryParams {
   page_size?: number;
   search?: string;
   category_id?: number;
-  stock_level?: StockLevel;
+  stock_status?: StockStatus;
   sort_by?: 'name' | 'quantity' | 'created_at' | 'updated_at';
   sort_order?: SortOrder;
 }
 
 export interface InventoryListResponse {
   items: InventoryItem[];
-  meta?: PaginationMeta;
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }

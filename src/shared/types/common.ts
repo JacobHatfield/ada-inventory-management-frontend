@@ -5,13 +5,14 @@ export interface PaginationMeta {
   page_size: number;
   total_items: number;
   total_pages: number;
-  has_next: boolean;
-  has_prev: boolean;
 }
 
 export interface PaginatedResponse<T> {
   items: T[];
-  meta: PaginationMeta;
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }
 
 export interface ValidationErrorItem {
