@@ -2,7 +2,7 @@ import { buildApiUrl } from '../config/env';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_TIMEOUT_MS = 30000;
 
 export class ApiError extends Error {
   status: number | null;
