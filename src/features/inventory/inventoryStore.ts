@@ -7,7 +7,7 @@ import type {
   InventoryUpdateRequest,
   InventoryListQueryParams,
   PaginationMeta,
-  AuditLog,
+  AuditLogEntry,
   AuditListQueryParams,
 } from '@/shared/types';
 
@@ -16,7 +16,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   const items = ref<InventoryItem[]>([]);
   const selectedItem = ref<InventoryItem | null>(null);
   const paginationMeta = ref<PaginationMeta | null>(null);
-  const auditHistory = ref<AuditLog[]>([]);
+  const auditHistory = ref<AuditLogEntry[]>([]);
   const auditPaginationMeta = ref<PaginationMeta | null>(null);
 
   // Loading flags

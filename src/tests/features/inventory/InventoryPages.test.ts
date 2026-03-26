@@ -6,7 +6,6 @@ import { nextTick } from 'vue';
 import { inventoryService } from '@/shared/services/inventoryService';
 import InventoryListPage from '@/features/inventory/InventoryListPage.vue';
 import ItemDetailPage from '@/features/inventory/ItemDetailPage.vue';
-import { useInventoryStore } from '@/features/inventory/inventoryStore';
 
 // Mock the service
 vi.mock('@/shared/services/inventoryService', () => ({

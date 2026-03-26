@@ -6,7 +6,7 @@ import type {
   InventoryListResponse,
   InventoryUpdateRequest,
   PaginatedResponse,
-  AuditLog,
+  AuditLogEntry,
   AuditListQueryParams,
 } from '../types';
 import { toQueryString } from '../utils/queryParams';
@@ -62,8 +62,8 @@ export const inventoryService = {
   getAuditHistory(
     itemId: number,
     params: AuditListQueryParams = {},
-  ): Promise<PaginatedResponse<AuditLog>> {
+  ): Promise<PaginatedResponse<AuditLogEntry>> {
     const query = toQueryString(params as Record<string, unknown>);
-    return apiRequest<PaginatedResponse<AuditLog>>(`/inventory/${itemId}/audit-history${query}`);
+    return apiRequest<PaginatedResponse<AuditLogEntry>>(`/inventory/${itemId}/audit-history${query}`);
   },
 };

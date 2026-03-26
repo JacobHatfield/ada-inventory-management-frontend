@@ -180,7 +180,7 @@ describe('inventoryStore', () => {
       vi.mocked(inventoryService.create).mockRejectedValue({});
 
       const store = useInventoryStore();
-      await expect(store.createItem({ name: 'x' })).rejects.toThrow();
+      await expect(store.createItem({ name: 'x', quantity: 0 })).rejects.toThrow();
 
       expect(store.mutationError).toBe('Failed to create item');
     });
@@ -420,7 +420,7 @@ describe('inventoryStore', () => {
   });
 
   describe('fetchAuditHistory()', () => {
-    const mockAuditLog = {
+    const mockAuditLogEntry = {
       id: 1,
       inventory_item_id: 1,
       user_id: 1,
@@ -433,7 +433,7 @@ describe('inventoryStore', () => {
 
     it('successfully fetches and updates auditHistory and auditPaginationMeta', async () => {
       vi.mocked(inventoryService.getAuditHistory).mockResolvedValue({
-        items: [mockAuditLog],
+        items: [mockAuditLogEntry],
         total: 1,
         page: 1,
         page_size: 10,

@@ -2,11 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createRouter, createMemoryHistory, type Router } from 'vue-router';
-import { nextTick } from 'vue';
 import CategoryListPage from '@/features/categories/CategoryListPage.vue';
 import CreateCategoryPage from '@/features/categories/CreateCategoryPage.vue';
 import EditCategoryPage from '@/features/categories/EditCategoryPage.vue';
-import { useCategoryStore } from '@/features/categories/categoryStore';
 import { categoryService } from '@/shared/services/categoryService';
 
 // Mock service
@@ -42,10 +40,9 @@ describe('CategoryPages Integration', () => {
 
   describe('CategoryListPage.vue', () => {
     it('renders category list and handle deletion', async () => {
-      const store = useCategoryStore();
       const mockCat = { id: 1, name: 'Tools', description: 'Hand and power tools' };
 
-      vi.mocked(categoryService.list).mockResolvedValue([mockCat]);
+      vi.mocked(categoryService.list).mockResolvedValue({ items: [mockCat] });
       vi.mocked(categoryService.remove).mockResolvedValue();
 
       const wrapper = mount(CategoryListPage, {

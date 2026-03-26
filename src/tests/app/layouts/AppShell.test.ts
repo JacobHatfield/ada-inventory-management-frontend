@@ -4,7 +4,6 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createRouter, createMemoryHistory, type Router } from 'vue-router';
 import AppShell from '@/app/layouts/AppShell.vue';
 import { useAuthStore } from '@/shared/stores/authStore';
-import { useRouteUiStore } from '@/shared/stores/routeUiStore';
 
 describe('AppShell.vue', () => {
   let router: Router;

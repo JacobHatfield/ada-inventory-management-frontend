@@ -23,8 +23,8 @@ describe('ItemForm.test.ts', () => {
       props: { initialValues },
     });
 
-    expect(wrapper.find('#item-name').element.value).toBe('Existing Item');
-    expect(wrapper.find('#item-quantity').element.value).toBe('50');
+    expect((wrapper.find('#item-name').element as HTMLInputElement).value).toBe('Existing Item');
+    expect((wrapper.find('#item-quantity').element as HTMLInputElement).value).toBe('50');
   });
 
   it('emits submit event with form data on valid submission', async () => {
@@ -40,7 +40,7 @@ describe('ItemForm.test.ts', () => {
     await delay(50);
 
     expect(wrapper.emitted().submit).toBeTruthy();
-    expect(wrapper.emitted().submit[0][0]).toMatchObject({
+    expect((wrapper.emitted().submit as any[][])[0][0]).toMatchObject({
       name: 'New Gadget',
       quantity: 100,
       description: 'Splendid gadget',

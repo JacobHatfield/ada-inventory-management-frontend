@@ -1,4 +1,6 @@
-export interface AuditLog {
+import type { PaginatedResponse } from './common';
+
+export interface AuditLogEntry {
   id: number;
   inventory_item_id: number;
   user_id: number;
@@ -13,3 +15,5 @@ export interface AuditListQueryParams {
   page?: number;
   page_size?: number;
 }
+
+export type AuditListResponse = PaginatedResponse<AuditLogEntry>;

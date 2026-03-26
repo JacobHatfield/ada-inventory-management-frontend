@@ -31,7 +31,7 @@ describe('AppNotification.vue', () => {
 
   it('removes a notification when close button is clicked', async () => {
     const store = useNotificationStore();
-    const id = store.notify('Test notification');
+    store.notify('Test notification');
 
     const wrapper = mount(AppNotification, {
       global: {

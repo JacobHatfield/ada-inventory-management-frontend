@@ -3,7 +3,6 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createRouter, createMemoryHistory, type Router } from 'vue-router';
 import ProfilePage from '@/features/auth/ProfilePage.vue';
-import { useAuthStore } from '@/shared/stores/authStore';
 import { useNotificationStore } from '@/shared/stores/notificationStore';
 import { authService } from '@/shared/services/authService';
 
@@ -31,7 +30,6 @@ describe('ProfilePage.test.ts', () => {
   });
 
   it('fetches profile and populates form on mount', async () => {
-    const authStore = useAuthStore();
     const mockProfile = {
       id: 1,
       full_name: 'John Doe',

@@ -17,15 +17,15 @@ describe('CategoryForm.test.ts', () => {
       props: { initialValues },
     });
 
-    expect(wrapper.find('#category-name').element.value).toBe('Paint');
-    expect(wrapper.find('#category-description').element.value).toBe('Wall paint');
+    expect((wrapper.find('#category-name').element as HTMLInputElement).value).toBe('Paint');
+    expect((wrapper.find('#category-description').element as HTMLTextAreaElement).value).toBe('Wall paint');
 
     await wrapper.find('form').trigger('submit');
     await flushPromises();
     await delay(50);
 
     expect(wrapper.emitted().submit).toBeTruthy();
-    expect(wrapper.emitted().submit[0][0]).toEqual({ name: 'Paint', description: 'Wall paint' });
+    expect((wrapper.emitted().submit as any[][])[0][0]).toEqual({ name: 'Paint', description: 'Wall paint' });
   });
 
   it('shows required validation error', async () => {

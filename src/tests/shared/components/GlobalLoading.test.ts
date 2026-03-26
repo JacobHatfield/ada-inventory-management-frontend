@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import GlobalLoading from '@/shared/components/GlobalLoading.vue';
 import { useRouteUiStore } from '@/shared/stores/routeUiStore';
