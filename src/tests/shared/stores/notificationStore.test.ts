@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-deprecated-props-default-this */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useNotificationStore } from '@/shared/stores/notificationStore';

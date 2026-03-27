@@ -64,6 +64,8 @@ export const inventoryService = {
     params: AuditListQueryParams = {},
   ): Promise<PaginatedResponse<AuditLogEntry>> {
     const query = toQueryString(params as Record<string, unknown>);
-    return apiRequest<PaginatedResponse<AuditLogEntry>>(`/inventory/${itemId}/audit-history${query}`);
+    return apiRequest<PaginatedResponse<AuditLogEntry>>(
+      `/inventory/${itemId}/audit-history${query}`,
+    );
   },
 };
