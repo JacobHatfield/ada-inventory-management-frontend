@@ -119,8 +119,8 @@ Integrated via GitHub Actions (.github/workflows/pipeline.yml):
 ## Deployment
 
 - Hosting: Deployed on Render.
-- Frontend URL: [Place your production URL here]
-- API URL: [Place your production backend URL here]
+- Frontend URL: https://ada-inventory-management-frontend.onrender.com
+- Backend URL: https://ada-inventory-management-backend.onrender.com
 
 ---
 
